@@ -20,5 +20,5 @@ dotnet run --project ConsoleClient
 
 ## Podela rada
 
-- Bojan Konjevic: TODO
-- TODO: TODO
+- Bojan Konjevic: `#posetilac`, `#kupovina`, `#izdavac`.
+- Luna Sabani: `#adresa`, `#autor`, `#knjiga`.
