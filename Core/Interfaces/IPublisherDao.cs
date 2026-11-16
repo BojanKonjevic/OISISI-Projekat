@@ -6,4 +6,5 @@ public interface IPublisherDao
 {
     List<Publisher> Load();
     void Save(List<Publisher> publishers);
+    Publisher Add(Publisher publisher);
 }

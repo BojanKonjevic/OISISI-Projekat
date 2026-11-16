@@ -11,4 +11,13 @@ public class PurchaseDao : IPurchaseDao
     public List<Purchase> Load() => JsonFile<Purchase>.Load(FilePath);
 
     public void Save(List<Purchase> purchases) => JsonFile<Purchase>.Save(FilePath, purchases);
+
+    public Purchase Add(Purchase purchase)
+    {
+        List<Purchase> purchases = Load();
+        purchase.Id = purchases.Count == 0 ? 1 : purchases.Max(p => p.Id) + 1;
+        purchases.Add(purchase);
+        Save(purchases);
+        return purchase;
+    }
 }
