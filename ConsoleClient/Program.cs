@@ -4,10 +4,16 @@ using Core.DAO;
 VisitorDao visitorDao = new();
 PurchaseDao purchaseDao = new();
 PublisherDao publisherDao = new();
+AddressDao addressDao = new();
+AuthorDao authorDao = new();
+BookDao bookDao = new();
 
 VisitorController visitorController = new(visitorDao);
 PurchaseController purchaseController = new(purchaseDao);
 PublisherController publisherController = new(publisherDao);
+AddressController addressController = new(addressDao);
+AuthorController authorController = new(authorDao);
+BookController bookController = new(bookDao);
 
 while (true)
 {
@@ -16,6 +22,9 @@ while (true)
     Console.WriteLine("1. Dodaj posetioca");
     Console.WriteLine("2. Dodaj kupovinu");
     Console.WriteLine("3. Dodaj izdavaca");
+    Console.WriteLine("4. Dodaj adresu");
+    Console.WriteLine("5. Dodaj autora");
+    Console.WriteLine("6. Dodaj knjigu");
     Console.WriteLine("0. Izlaz");
     Console.Write("Izbor: ");
 
@@ -36,6 +45,15 @@ while (true)
             break;
         case "3":
             publisherController.AddPublisher();
+            break;
+        case "4":
+            addressController.AddAddress();
+            break;
+        case "5":
+            authorController.AddAuthor();
+            break;
+        case "6":
+            bookController.AddBook();
             break;
         default:
             Console.WriteLine("Nepostojeca opcija.");

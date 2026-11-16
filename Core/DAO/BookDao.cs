@@ -11,4 +11,13 @@ public class BookDao : IBookDao
     public List<Book> Load() => JsonFile<Book>.Load(FilePath);
 
     public void Save(List<Book> books) => JsonFile<Book>.Save(FilePath, books);
+
+    public Book Add(Book book)
+    {
+        List<Book> books = Load();
+        book.Id = books.Count == 0 ? 1 : books.Max(b => b.Id) + 1;
+        books.Add(book);
+        Save(books);
+        return book;
+    }
 }

@@ -6,4 +6,5 @@ public interface IBookDao
 {
     List<Book> Load();
     void Save(List<Book> books);
+    Book Add(Book book);
 }

@@ -6,4 +6,5 @@ public interface IAddressDao
 {
     List<Address> Load();
     void Save(List<Address> addresses);
+    Address Add(Address address);
 }
