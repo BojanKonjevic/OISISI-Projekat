@@ -1,6 +1,8 @@
+using Core.Utils;
+
 namespace Core.Models;
 
-public class Author
+public class Author : ISerializable
 {
     public int Id { get; set; }
     public string FirstName { get; set; } = string.Empty;
@@ -12,4 +14,46 @@ public class Author
     public string IdCardNumber { get; set; } = string.Empty;
     public int YearsOfExperience { get; set; }
     public List<int> BookIds { get; set; } = [];
+
+    public string[] ToCSV()
+    {
+        return
+        [
+            Id.ToString(),
+            FirstName,
+            LastName,
+            DateOfBirth.ToString("yyyy-MM-dd"),
+            AddressId.ToString(),
+            Phone,
+            Email,
+            IdCardNumber,
+            YearsOfExperience.ToString(),
+            string.Join(",", BookIds)
+        ];
+    }
+
+    public void FromCSV(string[] values)
+    {
+        Id = int.Parse(values[0]);
+        FirstName = values[1];
+        LastName = values[2];
+        DateOfBirth = DateOnly.ParseExact(values[3], "yyyy-MM-dd");
+        AddressId = int.Parse(values[4]);
+        Phone = values[5];
+        Email = values[6];
+        IdCardNumber = values[7];
+        YearsOfExperience = int.Parse(values[8]);
+        BookIds = ParseIds(values[9]);
+    }
+
+    private static List<int> ParseIds(string value)
+    {
+        List<int> ids = [];
+        foreach (string part in value.Split(',', StringSplitOptions.RemoveEmptyEntries))
+        {
+            ids.Add(int.Parse(part));
+        }
+
+        return ids;
+    }
 }

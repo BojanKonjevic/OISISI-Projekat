@@ -4,7 +4,7 @@ namespace Core.Interfaces;
 
 public interface IAuthorDao
 {
-    List<Author> Load();
-    void Save(List<Author> authors);
     Author Add(Author author);
+
+    List<Author> GetAll();
 }

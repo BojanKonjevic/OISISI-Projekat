@@ -6,18 +6,22 @@ namespace Core.DAO;
 
 public class AddressDao : IAddressDao
 {
-    private static readonly string FilePath = DataStorage.PathFor("addresses.json");
+    private readonly List<Address> _addresses;
+    private readonly Storage<Address> _storage;
 
-    public List<Address> Load() => JsonFile<Address>.Load(FilePath);
-
-    public void Save(List<Address> addresses) => JsonFile<Address>.Save(FilePath, addresses);
+    public AddressDao()
+    {
+        _storage = new Storage<Address>("addresses.csv");
+        _addresses = _storage.Load();
+    }
 
     public Address Add(Address address)
     {
-        List<Address> addresses = Load();
-        address.Id = addresses.Count == 0 ? 1 : addresses.Max(a => a.Id) + 1;
-        addresses.Add(address);
-        Save(addresses);
+        address.Id = _addresses.Count == 0 ? 1 : _addresses.Max(a => a.Id) + 1;
+        _addresses.Add(address);
+        _storage.Save(_addresses);
         return address;
     }
+
+    public List<Address> GetAll() => _addresses;
 }

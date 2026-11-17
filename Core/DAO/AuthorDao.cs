@@ -6,18 +6,22 @@ namespace Core.DAO;
 
 public class AuthorDao : IAuthorDao
 {
-    private static readonly string FilePath = DataStorage.PathFor("authors.json");
+    private readonly List<Author> _authors;
+    private readonly Storage<Author> _storage;
 
-    public List<Author> Load() => JsonFile<Author>.Load(FilePath);
-
-    public void Save(List<Author> authors) => JsonFile<Author>.Save(FilePath, authors);
+    public AuthorDao()
+    {
+        _storage = new Storage<Author>("authors.csv");
+        _authors = _storage.Load();
+    }
 
     public Author Add(Author author)
     {
-        List<Author> authors = Load();
-        author.Id = authors.Count == 0 ? 1 : authors.Max(a => a.Id) + 1;
-        authors.Add(author);
-        Save(authors);
+        author.Id = _authors.Count == 0 ? 1 : _authors.Max(a => a.Id) + 1;
+        _authors.Add(author);
+        _storage.Save(_authors);
         return author;
     }
+
+    public List<Author> GetAll() => _authors;
 }

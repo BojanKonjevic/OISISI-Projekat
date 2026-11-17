@@ -1,6 +1,9 @@
+using System.Globalization;
+using Core.Utils;
+
 namespace Core.Models;
 
-public class Book
+public class Book : ISerializable
 {
     public int Id { get; set; }
     public string Isbn { get; set; } = string.Empty;
@@ -13,4 +16,48 @@ public class Book
     public int PublisherId { get; set; }
     public List<int> BuyerVisitorIds { get; set; } = [];
     public List<int> WishlistVisitorIds { get; set; } = [];
+
+    public string[] ToCSV()
+    {
+        return
+        [
+            Id.ToString(),
+            Isbn,
+            Title,
+            Genre,
+            PublicationYear.ToString(),
+            Price.ToString(CultureInfo.InvariantCulture),
+            PageCount.ToString(),
+            string.Join(",", AuthorIds),
+            PublisherId.ToString(),
+            string.Join(",", BuyerVisitorIds),
+            string.Join(",", WishlistVisitorIds)
+        ];
+    }
+
+    public void FromCSV(string[] values)
+    {
+        Id = int.Parse(values[0]);
+        Isbn = values[1];
+        Title = values[2];
+        Genre = values[3];
+        PublicationYear = int.Parse(values[4]);
+        Price = decimal.Parse(values[5], CultureInfo.InvariantCulture);
+        PageCount = int.Parse(values[6]);
+        AuthorIds = ParseIds(values[7]);
+        PublisherId = int.Parse(values[8]);
+        BuyerVisitorIds = ParseIds(values[9]);
+        WishlistVisitorIds = ParseIds(values[10]);
+    }
+
+    private static List<int> ParseIds(string value)
+    {
+        List<int> ids = [];
+        foreach (string part in value.Split(',', StringSplitOptions.RemoveEmptyEntries))
+        {
+            ids.Add(int.Parse(part));
+        }
+
+        return ids;
+    }
 }
