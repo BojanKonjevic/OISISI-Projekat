@@ -36,5 +36,18 @@ public class AuthorDao : IAuthorDao
         return author;
     }
 
+    public Author? Remove(int id)
+    {
+        Author? author = _authors.Find(a => a.Id == id);
+        if (author is null)
+        {
+            return null;
+        }
+
+        _authors.Remove(author);
+        _storage.Save(_authors);
+        return author;
+    }
+
     public List<Author> GetAll() => _authors;
 }

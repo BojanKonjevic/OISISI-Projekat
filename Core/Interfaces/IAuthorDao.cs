@@ -8,5 +8,7 @@ public interface IAuthorDao
 
     Author? Update(Author author);
 
+    Author? Remove(int id);
+
     List<Author> GetAll();
 }

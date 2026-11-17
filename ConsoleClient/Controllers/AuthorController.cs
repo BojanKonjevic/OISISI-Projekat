@@ -33,6 +33,14 @@ public class AuthorController
         Console.WriteLine("Autor je izmenjen.");
     }
 
+    public void DeleteAuthor()
+    {
+        Console.WriteLine("--- Brisanje autora ---");
+        int id = ConsoleInput.ReadExistingId("Id autora", id => _authorDao.GetAll().Any(a => a.Id == id));
+        _authorDao.Remove(id);
+        Console.WriteLine("Autor je obrisan.");
+    }
+
     private Author ReadAuthor(int id = 0)
     {
         return new Author()

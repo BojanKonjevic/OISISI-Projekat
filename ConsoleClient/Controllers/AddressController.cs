@@ -29,6 +29,14 @@ public class AddressController
         Console.WriteLine("Adresa je izmenjena.");
     }
 
+    public void DeleteAddress()
+    {
+        Console.WriteLine("--- Brisanje adrese ---");
+        int id = ConsoleInput.ReadExistingId("Id adrese", id => _addressDao.GetAll().Any(a => a.Id == id));
+        _addressDao.Remove(id);
+        Console.WriteLine("Adresa je obrisana.");
+    }
+
     private Address ReadAddress(int id = 0)
     {
         return new Address()

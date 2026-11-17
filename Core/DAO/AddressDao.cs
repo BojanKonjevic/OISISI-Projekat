@@ -36,5 +36,18 @@ public class AddressDao : IAddressDao
         return address;
     }
 
+    public Address? Remove(int id)
+    {
+        Address? address = _addresses.Find(a => a.Id == id);
+        if (address is null)
+        {
+            return null;
+        }
+
+        _addresses.Remove(address);
+        _storage.Save(_addresses);
+        return address;
+    }
+
     public List<Address> GetAll() => _addresses;
 }

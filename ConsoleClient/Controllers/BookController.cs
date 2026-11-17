@@ -35,6 +35,14 @@ public class BookController
         Console.WriteLine("Knjiga je izmenjena.");
     }
 
+    public void DeleteBook()
+    {
+        Console.WriteLine("--- Brisanje knjige ---");
+        int id = ConsoleInput.ReadExistingId("Id knjige", id => _bookDao.GetAll().Any(b => b.Id == id));
+        _bookDao.Remove(id);
+        Console.WriteLine("Knjiga je obrisana.");
+    }
+
     private Book ReadBook(int id = 0)
     {
         return new Book()

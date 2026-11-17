@@ -8,5 +8,7 @@ public interface IBookDao
 
     Book? Update(Book book);
 
+    Book? Remove(int id);
+
     List<Book> GetAll();
 }

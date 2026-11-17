@@ -36,5 +36,18 @@ public class BookDao : IBookDao
         return book;
     }
 
+    public Book? Remove(int id)
+    {
+        Book? book = _books.Find(b => b.Id == id);
+        if (book is null)
+        {
+            return null;
+        }
+
+        _books.Remove(book);
+        _storage.Save(_books);
+        return book;
+    }
+
     public List<Book> GetAll() => _books;
 }

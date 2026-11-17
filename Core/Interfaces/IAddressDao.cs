@@ -8,5 +8,7 @@ public interface IAddressDao
 
     Address? Update(Address address);
 
+    Address? Remove(int id);
+
     List<Address> GetAll();
 }
