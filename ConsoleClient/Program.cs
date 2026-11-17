@@ -25,6 +25,9 @@ while (true)
     Console.WriteLine("4. Dodaj adresu");
     Console.WriteLine("5. Dodaj autora");
     Console.WriteLine("6. Dodaj knjigu");
+    Console.WriteLine("7. Izmeni posetioca");
+    Console.WriteLine("8. Izmeni kupovinu");
+    Console.WriteLine("9. Izmeni izdavaca");
     Console.WriteLine("0. Izlaz");
     Console.Write("Izbor: ");
 
@@ -54,6 +57,15 @@ while (true)
             break;
         case "6":
             bookController.AddBook();
+            break;
+        case "7":
+            visitorController.EditVisitor();
+            break;
+        case "8":
+            purchaseController.EditPurchase();
+            break;
+        case "9":
+            publisherController.EditPublisher();
             break;
         default:
             Console.WriteLine("Nepostojeca opcija.");

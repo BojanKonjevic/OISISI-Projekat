@@ -19,18 +19,31 @@ public class PublisherController
     public void AddPublisher()
     {
         Console.WriteLine("--- Dodavanje izdavaca ---");
+        Publisher publisher = ReadPublisher();
+        _publisherDao.Add(publisher);
+        Console.WriteLine($"Izdavac je dodat sa Id {publisher.Id}.");
+    }
 
-        Publisher publisher = new()
+    public void EditPublisher()
+    {
+        Console.WriteLine("--- Izmena izdavaca ---");
+        int id = ConsoleInput.ReadExistingId("Id izdavaca", id => _publisherDao.GetAll().Any(p => p.Id == id));
+        Publisher publisher = ReadPublisher(id);
+        _publisherDao.Update(publisher);
+        Console.WriteLine("Izdavac je izmenjen.");
+    }
+
+    private Publisher ReadPublisher(int id = 0)
+    {
+        return new Publisher()
         {
-            Code = ConsoleInput.ReadUniqueText("Sifra", _publisherDao.GetAll().Select(p => p.Code)),
+            Id = id,
+            Code = ConsoleInput.ReadUniqueText("Sifra", _publisherDao.GetAll().Where(p => p.Id != id).Select(p => p.Code)),
             Name = ConsoleInput.ReadText("Naziv"),
             HeadAuthorId = ReadHeadAuthorId(),
             AuthorIds = ConsoleInput.ReadExistingIds("Id-evi autora", id => _authorDao.GetAll().Any(a => a.Id == id)),
             BookIds = ConsoleInput.ReadExistingIds("Id-evi knjiga", id => _bookDao.GetAll().Any(b => b.Id == id))
         };
-
-        _publisherDao.Add(publisher);
-        Console.WriteLine($"Izdavac je dodat sa Id {publisher.Id}.");
     }
 
     private static int? ReadHeadAuthorId()

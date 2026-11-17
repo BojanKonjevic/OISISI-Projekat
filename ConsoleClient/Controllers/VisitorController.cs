@@ -19,25 +19,38 @@ public class VisitorController
     public void AddVisitor()
     {
         Console.WriteLine("--- Dodavanje posetioca ---");
+        Visitor visitor = ReadVisitor();
+        _visitorDao.Add(visitor);
+        Console.WriteLine($"Posetilac je dodat sa Id {visitor.Id}.");
+    }
 
-        Visitor visitor = new()
+    public void EditVisitor()
+    {
+        Console.WriteLine("--- Izmena posetioca ---");
+        int id = ConsoleInput.ReadExistingId("Id posetioca", id => _visitorDao.GetAll().Any(v => v.Id == id));
+        Visitor visitor = ReadVisitor(id);
+        _visitorDao.Update(visitor);
+        Console.WriteLine("Posetilac je izmenjen.");
+    }
+
+    private Visitor ReadVisitor(int id = 0)
+    {
+        return new Visitor()
         {
+            Id = id,
             FirstName = ConsoleInput.ReadText("Ime"),
             LastName = ConsoleInput.ReadText("Prezime"),
             DateOfBirth = ConsoleInput.ReadDate("Datum rodjenja", new DateOnly(1900, 1, 1), DateOnly.FromDateTime(DateTime.Today)),
             AddressId = ConsoleInput.ReadExistingId("Id adrese", id => _addressDao.GetAll().Any(a => a.Id == id)),
             Phone = ConsoleInput.ReadPhone("Telefon"),
             Email = ConsoleInput.ReadEmail("Email"),
-            MembershipCardNumber = ConsoleInput.ReadUniqueText("Broj clanske karte", _visitorDao.GetAll().Select(v => v.MembershipCardNumber)),
+            MembershipCardNumber = ConsoleInput.ReadUniqueText("Broj clanske karte", _visitorDao.GetAll().Where(v => v.Id != id).Select(v => v.MembershipCardNumber)),
             MembershipYear = ConsoleInput.ReadInt("Godina uplate clanstva", max: DateTime.Today.Year),
             Status = ReadStatus(),
             AverageRating = ReadRating(),
             PurchasedBookIds = ConsoleInput.ReadExistingIds("Id-evi kupljenih knjiga", id => _bookDao.GetAll().Any(b => b.Id == id)),
             WishlistBookIds = ConsoleInput.ReadExistingIds("Id-evi knjiga sa liste zelja", id => _bookDao.GetAll().Any(b => b.Id == id))
         };
-
-        _visitorDao.Add(visitor);
-        Console.WriteLine($"Posetilac je dodat sa Id {visitor.Id}.");
     }
 
     private static MembershipStatus ReadStatus()

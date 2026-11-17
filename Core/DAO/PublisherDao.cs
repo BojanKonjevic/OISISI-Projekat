@@ -23,5 +23,18 @@ public class PublisherDao : IPublisherDao
         return publisher;
     }
 
+    public Publisher? Update(Publisher publisher)
+    {
+        int index = _publishers.FindIndex(p => p.Id == publisher.Id);
+        if (index < 0)
+        {
+            return null;
+        }
+
+        _publishers[index] = publisher;
+        _storage.Save(_publishers);
+        return publisher;
+    }
+
     public List<Publisher> GetAll() => _publishers;
 }

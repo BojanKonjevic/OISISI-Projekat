@@ -19,18 +19,31 @@ public class PurchaseController
     public void AddPurchase()
     {
         Console.WriteLine("--- Dodavanje kupovine ---");
+        Purchase purchase = ReadPurchase();
+        _purchaseDao.Add(purchase);
+        Console.WriteLine($"Kupovina je dodata sa Id {purchase.Id}.");
+    }
 
-        Purchase purchase = new()
+    public void EditPurchase()
+    {
+        Console.WriteLine("--- Izmena kupovine ---");
+        int id = ConsoleInput.ReadExistingId("Id kupovine", id => _purchaseDao.GetAll().Any(p => p.Id == id));
+        Purchase purchase = ReadPurchase(id);
+        _purchaseDao.Update(purchase);
+        Console.WriteLine("Kupovina je izmenjena.");
+    }
+
+    private Purchase ReadPurchase(int id = 0)
+    {
+        return new Purchase()
         {
+            Id = id,
             VisitorId = ConsoleInput.ReadExistingId("Id posetioca", id => _visitorDao.GetAll().Any(v => v.Id == id)),
             BookId = ConsoleInput.ReadExistingId("Id knjige", id => _bookDao.GetAll().Any(b => b.Id == id)),
             PurchaseDate = ConsoleInput.ReadDate("Datum kupovine", max: DateOnly.FromDateTime(DateTime.Today)),
             Rating = ReadRating(),
             Comment = ConsoleInput.ReadText("Komentar")
         };
-
-        _purchaseDao.Add(purchase);
-        Console.WriteLine($"Kupovina je dodata sa Id {purchase.Id}.");
     }
 
     private static int ReadRating()

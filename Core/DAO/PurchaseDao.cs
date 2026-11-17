@@ -23,5 +23,18 @@ public class PurchaseDao : IPurchaseDao
         return purchase;
     }
 
+    public Purchase? Update(Purchase purchase)
+    {
+        int index = _purchases.FindIndex(p => p.Id == purchase.Id);
+        if (index < 0)
+        {
+            return null;
+        }
+
+        _purchases[index] = purchase;
+        _storage.Save(_purchases);
+        return purchase;
+    }
+
     public List<Purchase> GetAll() => _purchases;
 }

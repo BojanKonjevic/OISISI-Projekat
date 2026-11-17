@@ -23,5 +23,18 @@ public class VisitorDao : IVisitorDao
         return visitor;
     }
 
+    public Visitor? Update(Visitor visitor)
+    {
+        int index = _visitors.FindIndex(v => v.Id == visitor.Id);
+        if (index < 0)
+        {
+            return null;
+        }
+
+        _visitors[index] = visitor;
+        _storage.Save(_visitors);
+        return visitor;
+    }
+
     public List<Visitor> GetAll() => _visitors;
 }
