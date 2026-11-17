@@ -33,6 +33,14 @@ public class PublisherController
         Console.WriteLine("Izdavac je izmenjen.");
     }
 
+    public void DeletePublisher()
+    {
+        Console.WriteLine("--- Brisanje izdavaca ---");
+        int id = ConsoleInput.ReadExistingId("Id izdavaca", id => _publisherDao.GetAll().Any(p => p.Id == id));
+        _publisherDao.Remove(id);
+        Console.WriteLine("Izdavac je obrisan.");
+    }
+
     private Publisher ReadPublisher(int id = 0)
     {
         return new Publisher()

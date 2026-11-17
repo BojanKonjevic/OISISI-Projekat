@@ -8,5 +8,7 @@ public interface IVisitorDao
 
     Visitor? Update(Visitor visitor);
 
+    Visitor? Remove(int id);
+
     List<Visitor> GetAll();
 }

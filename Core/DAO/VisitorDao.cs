@@ -36,5 +36,18 @@ public class VisitorDao : IVisitorDao
         return visitor;
     }
 
+    public Visitor? Remove(int id)
+    {
+        Visitor? visitor = _visitors.Find(v => v.Id == id);
+        if (visitor is null)
+        {
+            return null;
+        }
+
+        _visitors.Remove(visitor);
+        _storage.Save(_visitors);
+        return visitor;
+    }
+
     public List<Visitor> GetAll() => _visitors;
 }

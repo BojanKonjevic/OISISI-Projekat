@@ -8,5 +8,7 @@ public interface IPublisherDao
 
     Publisher? Update(Publisher publisher);
 
+    Publisher? Remove(int id);
+
     List<Publisher> GetAll();
 }

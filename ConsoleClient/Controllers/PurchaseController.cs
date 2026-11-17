@@ -33,6 +33,14 @@ public class PurchaseController
         Console.WriteLine("Kupovina je izmenjena.");
     }
 
+    public void DeletePurchase()
+    {
+        Console.WriteLine("--- Brisanje kupovine ---");
+        int id = ConsoleInput.ReadExistingId("Id kupovine", id => _purchaseDao.GetAll().Any(p => p.Id == id));
+        _purchaseDao.Remove(id);
+        Console.WriteLine("Kupovina je obrisana.");
+    }
+
     private Purchase ReadPurchase(int id = 0)
     {
         return new Purchase()

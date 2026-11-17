@@ -36,5 +36,18 @@ public class PurchaseDao : IPurchaseDao
         return purchase;
     }
 
+    public Purchase? Remove(int id)
+    {
+        Purchase? purchase = _purchases.Find(p => p.Id == id);
+        if (purchase is null)
+        {
+            return null;
+        }
+
+        _purchases.Remove(purchase);
+        _storage.Save(_purchases);
+        return purchase;
+    }
+
     public List<Purchase> GetAll() => _purchases;
 }

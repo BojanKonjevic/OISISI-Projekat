@@ -36,5 +36,18 @@ public class PublisherDao : IPublisherDao
         return publisher;
     }
 
+    public Publisher? Remove(int id)
+    {
+        Publisher? publisher = _publishers.Find(p => p.Id == id);
+        if (publisher is null)
+        {
+            return null;
+        }
+
+        _publishers.Remove(publisher);
+        _storage.Save(_publishers);
+        return publisher;
+    }
+
     public List<Publisher> GetAll() => _publishers;
 }

@@ -8,5 +8,7 @@ public interface IPurchaseDao
 
     Purchase? Update(Purchase purchase);
 
+    Purchase? Remove(int id);
+
     List<Purchase> GetAll();
 }

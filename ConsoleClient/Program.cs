@@ -31,6 +31,9 @@ while (true)
     Console.WriteLine("10. Izmeni adresu");
     Console.WriteLine("11. Izmeni autora");
     Console.WriteLine("12. Izmeni knjigu");
+    Console.WriteLine("13. Obrisi posetioca");
+    Console.WriteLine("14. Obrisi kupovinu");
+    Console.WriteLine("15. Obrisi izdavaca");
     Console.WriteLine("0. Izlaz");
     Console.Write("Izbor: ");
 
@@ -78,6 +81,15 @@ while (true)
             break;
         case "12":
             bookController.EditBook();
+            break;
+        case "13":
+            visitorController.DeleteVisitor();
+            break;
+        case "14":
+            purchaseController.DeletePurchase();
+            break;
+        case "15":
+            publisherController.DeletePublisher();
             break;
         default:
             Console.WriteLine("Nepostojeca opcija.");

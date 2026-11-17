@@ -33,6 +33,14 @@ public class VisitorController
         Console.WriteLine("Posetilac je izmenjen.");
     }
 
+    public void DeleteVisitor()
+    {
+        Console.WriteLine("--- Brisanje posetioca ---");
+        int id = ConsoleInput.ReadExistingId("Id posetioca", id => _visitorDao.GetAll().Any(v => v.Id == id));
+        _visitorDao.Remove(id);
+        Console.WriteLine("Posetilac je obrisan.");
+    }
+
     private Visitor ReadVisitor(int id = 0)
     {
         return new Visitor()
