@@ -4,7 +4,7 @@ namespace Core.Interfaces;
 
 public interface IVisitorDao
 {
-    List<Visitor> Load();
-    void Save(List<Visitor> visitors);
     Visitor Add(Visitor visitor);
+
+    List<Visitor> GetAll();
 }

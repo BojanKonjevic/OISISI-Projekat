@@ -4,7 +4,7 @@ namespace Core.Interfaces;
 
 public interface IPurchaseDao
 {
-    List<Purchase> Load();
-    void Save(List<Purchase> purchases);
     Purchase Add(Purchase purchase);
+
+    List<Purchase> GetAll();
 }

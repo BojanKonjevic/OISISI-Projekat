@@ -6,18 +6,22 @@ namespace Core.DAO;
 
 public class PublisherDao : IPublisherDao
 {
-    private static readonly string FilePath = DataStorage.PathFor("publishers.json");
+    private readonly List<Publisher> _publishers;
+    private readonly Storage<Publisher> _storage;
 
-    public List<Publisher> Load() => JsonFile<Publisher>.Load(FilePath);
-
-    public void Save(List<Publisher> publishers) => JsonFile<Publisher>.Save(FilePath, publishers);
+    public PublisherDao()
+    {
+        _storage = new Storage<Publisher>("publishers.csv");
+        _publishers = _storage.Load();
+    }
 
     public Publisher Add(Publisher publisher)
     {
-        List<Publisher> publishers = Load();
-        publisher.Id = publishers.Count == 0 ? 1 : publishers.Max(p => p.Id) + 1;
-        publishers.Add(publisher);
-        Save(publishers);
+        publisher.Id = _publishers.Count == 0 ? 1 : _publishers.Max(p => p.Id) + 1;
+        _publishers.Add(publisher);
+        _storage.Save(_publishers);
         return publisher;
     }
+
+    public List<Publisher> GetAll() => _publishers;
 }

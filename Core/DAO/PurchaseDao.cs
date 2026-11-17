@@ -6,18 +6,22 @@ namespace Core.DAO;
 
 public class PurchaseDao : IPurchaseDao
 {
-    private static readonly string FilePath = DataStorage.PathFor("purchases.json");
+    private readonly List<Purchase> _purchases;
+    private readonly Storage<Purchase> _storage;
 
-    public List<Purchase> Load() => JsonFile<Purchase>.Load(FilePath);
-
-    public void Save(List<Purchase> purchases) => JsonFile<Purchase>.Save(FilePath, purchases);
+    public PurchaseDao()
+    {
+        _storage = new Storage<Purchase>("purchases.csv");
+        _purchases = _storage.Load();
+    }
 
     public Purchase Add(Purchase purchase)
     {
-        List<Purchase> purchases = Load();
-        purchase.Id = purchases.Count == 0 ? 1 : purchases.Max(p => p.Id) + 1;
-        purchases.Add(purchase);
-        Save(purchases);
+        purchase.Id = _purchases.Count == 0 ? 1 : _purchases.Max(p => p.Id) + 1;
+        _purchases.Add(purchase);
+        _storage.Save(_purchases);
         return purchase;
     }
+
+    public List<Purchase> GetAll() => _purchases;
 }

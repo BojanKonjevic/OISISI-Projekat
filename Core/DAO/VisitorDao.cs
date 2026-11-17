@@ -6,18 +6,22 @@ namespace Core.DAO;
 
 public class VisitorDao : IVisitorDao
 {
-    private static readonly string FilePath = DataStorage.PathFor("visitors.json");
+    private readonly List<Visitor> _visitors;
+    private readonly Storage<Visitor> _storage;
 
-    public List<Visitor> Load() => JsonFile<Visitor>.Load(FilePath);
-
-    public void Save(List<Visitor> visitors) => JsonFile<Visitor>.Save(FilePath, visitors);
+    public VisitorDao()
+    {
+        _storage = new Storage<Visitor>("visitors.csv");
+        _visitors = _storage.Load();
+    }
 
     public Visitor Add(Visitor visitor)
     {
-        List<Visitor> visitors = Load();
-        visitor.Id = visitors.Count == 0 ? 1 : visitors.Max(v => v.Id) + 1;
-        visitors.Add(visitor);
-        Save(visitors);
+        visitor.Id = _visitors.Count == 0 ? 1 : _visitors.Max(v => v.Id) + 1;
+        _visitors.Add(visitor);
+        _storage.Save(_visitors);
         return visitor;
     }
+
+    public List<Visitor> GetAll() => _visitors;
 }
