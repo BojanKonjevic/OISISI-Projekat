@@ -8,12 +8,12 @@ AddressDao addressDao = new();
 AuthorDao authorDao = new();
 BookDao bookDao = new();
 
-VisitorController visitorController = new(visitorDao);
-PurchaseController purchaseController = new(purchaseDao);
-PublisherController publisherController = new(publisherDao);
+VisitorController visitorController = new(visitorDao, addressDao, bookDao);
+PurchaseController purchaseController = new(purchaseDao, visitorDao, bookDao);
+PublisherController publisherController = new(publisherDao, authorDao, bookDao);
 AddressController addressController = new(addressDao);
-AuthorController authorController = new(authorDao);
-BookController bookController = new(bookDao);
+AuthorController authorController = new(authorDao, addressDao);
+BookController bookController = new(bookDao, publisherDao, authorDao, visitorDao);
 
 while (true)
 {

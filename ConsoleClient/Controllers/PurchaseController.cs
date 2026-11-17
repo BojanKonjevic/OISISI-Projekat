@@ -6,10 +6,14 @@ namespace ConsoleClient.Controllers;
 public class PurchaseController
 {
     private readonly PurchaseDao _purchaseDao;
+    private readonly VisitorDao _visitorDao;
+    private readonly BookDao _bookDao;
 
-    public PurchaseController(PurchaseDao purchaseDao)
+    public PurchaseController(PurchaseDao purchaseDao, VisitorDao visitorDao, BookDao bookDao)
     {
         _purchaseDao = purchaseDao;
+        _visitorDao = visitorDao;
+        _bookDao = bookDao;
     }
 
     public void AddPurchase()
@@ -18,9 +22,9 @@ public class PurchaseController
 
         Purchase purchase = new()
         {
-            VisitorId = ConsoleInput.ReadInt("Id posetioca"),
-            BookId = ConsoleInput.ReadInt("Id knjige"),
-            PurchaseDate = ConsoleInput.ReadDate("Datum kupovine"),
+            VisitorId = ConsoleInput.ReadExistingId("Id posetioca", id => _visitorDao.GetAll().Any(v => v.Id == id)),
+            BookId = ConsoleInput.ReadExistingId("Id knjige", id => _bookDao.GetAll().Any(b => b.Id == id)),
+            PurchaseDate = ConsoleInput.ReadDate("Datum kupovine", max: DateOnly.FromDateTime(DateTime.Today)),
             Rating = ReadRating(),
             Comment = ConsoleInput.ReadText("Komentar")
         };

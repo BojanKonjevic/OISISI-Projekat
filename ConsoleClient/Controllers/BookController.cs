@@ -6,10 +6,16 @@ namespace ConsoleClient.Controllers;
 public class BookController
 {
     private readonly BookDao _bookDao;
+    private readonly PublisherDao _publisherDao;
+    private readonly AuthorDao _authorDao;
+    private readonly VisitorDao _visitorDao;
 
-    public BookController(BookDao bookDao)
+    public BookController(BookDao bookDao, PublisherDao publisherDao, AuthorDao authorDao, VisitorDao visitorDao)
     {
         _bookDao = bookDao;
+        _publisherDao = publisherDao;
+        _authorDao = authorDao;
+        _visitorDao = visitorDao;
     }
 
     public void AddBook()
@@ -18,16 +24,16 @@ public class BookController
 
         Book book = new()
         {
-            Isbn = ConsoleInput.ReadText("ISBN"),
+            Isbn = ConsoleInput.ReadUniqueText("ISBN", _bookDao.GetAll().Select(b => b.Isbn)),
             Title = ConsoleInput.ReadText("Naslov"),
             Genre = ConsoleInput.ReadText("Zanr"),
-            PublicationYear = ConsoleInput.ReadInt("Godina izdanja"),
+            PublicationYear = ConsoleInput.ReadInt("Godina izdanja", 1450, DateTime.Today.Year + 1),
             Price = ReadPrice(),
-            PageCount = ConsoleInput.ReadInt("Broj strana"),
-            AuthorIds = ConsoleInput.ReadIds("Id-evi autora"),
-            PublisherId = ConsoleInput.ReadInt("Id izdavaca"),
-            BuyerVisitorIds = ConsoleInput.ReadIds("Id-evi posetilaca kupaca"),
-            WishlistVisitorIds = ConsoleInput.ReadIds("Id-evi posetilaca sa liste zelja")
+            PageCount = ConsoleInput.ReadInt("Broj strana", 1),
+            AuthorIds = ConsoleInput.ReadExistingIds("Id-evi autora", id => _authorDao.GetAll().Any(a => a.Id == id)),
+            PublisherId = ConsoleInput.ReadExistingId("Id izdavaca", id => _publisherDao.GetAll().Any(p => p.Id == id)),
+            BuyerVisitorIds = ConsoleInput.ReadExistingIds("Id-evi posetilaca kupaca", id => _visitorDao.GetAll().Any(v => v.Id == id)),
+            WishlistVisitorIds = ConsoleInput.ReadExistingIds("Id-evi posetilaca sa liste zelja", id => _visitorDao.GetAll().Any(v => v.Id == id))
         };
 
         _bookDao.Add(book);

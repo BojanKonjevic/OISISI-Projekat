@@ -6,10 +6,12 @@ namespace ConsoleClient.Controllers;
 public class AuthorController
 {
     private readonly AuthorDao _authorDao;
+    private readonly AddressDao _addressDao;
 
-    public AuthorController(AuthorDao authorDao)
+    public AuthorController(AuthorDao authorDao, AddressDao addressDao)
     {
         _authorDao = authorDao;
+        _addressDao = addressDao;
     }
 
     public void AddAuthor()
@@ -20,10 +22,10 @@ public class AuthorController
         {
             FirstName = ConsoleInput.ReadText("Ime"),
             LastName = ConsoleInput.ReadText("Prezime"),
-            DateOfBirth = ConsoleInput.ReadDate("Datum rodjenja"),
-            AddressId = ConsoleInput.ReadInt("Id adrese"),
-            Phone = ConsoleInput.ReadText("Telefon"),
-            Email = ConsoleInput.ReadText("Email"),
+            DateOfBirth = ConsoleInput.ReadDate("Datum rodjenja", new DateOnly(1900, 1, 1), DateOnly.FromDateTime(DateTime.Today)),
+            AddressId = ConsoleInput.ReadExistingId("Id adrese", id => _addressDao.GetAll().Any(a => a.Id == id)),
+            Phone = ConsoleInput.ReadPhone("Telefon"),
+            Email = ConsoleInput.ReadEmail("Email"),
             IdCardNumber = ConsoleInput.ReadText("Broj licne karte"),
             YearsOfExperience = ConsoleInput.ReadInt("Godine iskustva"),
             BookIds = ConsoleInput.ReadIds("Id-evi knjiga")

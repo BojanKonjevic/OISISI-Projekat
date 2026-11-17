@@ -2,6 +2,8 @@ namespace ConsoleClient.Controllers;
 
 public static class ConsoleInput
 {
+    private const string PhoneChars = "+-() ";
+
     public static string ReadText(string prompt)
     {
         while (true)
@@ -17,31 +19,119 @@ public static class ConsoleInput
         }
     }
 
-    public static int ReadInt(string prompt)
+    public static int ReadInt(string prompt, int min = 0, int? max = null)
     {
         while (true)
         {
             Console.Write($"{prompt}: ");
-            if (int.TryParse(Console.ReadLine()?.Trim(), out int value) && value >= 0)
+            if (int.TryParse(Console.ReadLine()?.Trim(), out int value) && value >= min && (max is null || value <= max))
             {
                 return value;
             }
 
-            Console.WriteLine("Unesite ceo nenegativan broj.");
+            Console.WriteLine(max is null
+                ? $"Unesite ceo broj najmanje {min}."
+                : $"Unesite broj od {min} do {max}.");
         }
     }
 
-    public static DateOnly ReadDate(string prompt)
+    public static DateOnly ReadDate(string prompt, DateOnly? min = null, DateOnly? max = null)
     {
         while (true)
         {
             Console.Write($"{prompt} (gggg-mm-dd): ");
             if (DateOnly.TryParseExact(Console.ReadLine()?.Trim(), "yyyy-MM-dd", out DateOnly value))
             {
+                if (min is not null && value < min)
+                {
+                    Console.WriteLine($"Datum ne sme biti pre {min.Value:yyyy-MM-dd}.");
+                    continue;
+                }
+
+                if (max is not null && value > max)
+                {
+                    Console.WriteLine("Datum ne sme biti u buducnosti.");
+                    continue;
+                }
+
                 return value;
             }
 
             Console.WriteLine("Unesite datum u formatu gggg-mm-dd.");
+        }
+    }
+
+    public static string ReadEmail(string prompt)
+    {
+        while (true)
+        {
+            string value = ReadText(prompt);
+            if (value.Contains('@'))
+            {
+                return value;
+            }
+
+            Console.WriteLine("Email mora sadrzati znak @.");
+        }
+    }
+
+    public static string ReadPhone(string prompt)
+    {
+        while (true)
+        {
+            string value = ReadText(prompt);
+            if (value.All(c => char.IsAsciiDigit(c) || PhoneChars.Contains(c)))
+            {
+                return value;
+            }
+
+            Console.WriteLine("Telefon moze sadrzati samo cifre i znakove + - ( ).");
+        }
+    }
+
+    public static string ReadUniqueText(string prompt, IEnumerable<string> taken)
+    {
+        List<string> takenList = taken.ToList();
+        while (true)
+        {
+            string value = ReadText(prompt);
+            if (!takenList.Contains(value))
+            {
+                return value;
+            }
+
+            Console.WriteLine("Vec postoji entitet sa unetom vrednoscu.");
+        }
+    }
+
+    public static int ReadExistingId(string prompt, Func<int, bool> exists)
+    {
+        while (true)
+        {
+            int id = ReadInt(prompt);
+            if (exists(id))
+            {
+                return id;
+            }
+
+            Console.WriteLine($"Entitet sa Id {id} ne postoji.");
+        }
+    }
+
+    public static List<int> ReadExistingIds(string prompt, Func<int, bool> exists)
+    {
+        while (true)
+        {
+            List<int> ids = ReadIds(prompt);
+            if (ids.All(exists))
+            {
+                return ids;
+            }
+
+            foreach (int id in ids.Where(id => !exists(id)))
+            {
+                Console.WriteLine($"Entitet sa Id {id} ne postoji.");
+            }
         }
     }
 

@@ -6,10 +6,14 @@ namespace ConsoleClient.Controllers;
 public class VisitorController
 {
     private readonly VisitorDao _visitorDao;
+    private readonly AddressDao _addressDao;
+    private readonly BookDao _bookDao;
 
-    public VisitorController(VisitorDao visitorDao)
+    public VisitorController(VisitorDao visitorDao, AddressDao addressDao, BookDao bookDao)
     {
         _visitorDao = visitorDao;
+        _addressDao = addressDao;
+        _bookDao = bookDao;
     }
 
     public void AddVisitor()
@@ -20,16 +24,16 @@ public class VisitorController
         {
             FirstName = ConsoleInput.ReadText("Ime"),
             LastName = ConsoleInput.ReadText("Prezime"),
-            DateOfBirth = ConsoleInput.ReadDate("Datum rodjenja"),
-            AddressId = ConsoleInput.ReadInt("Id adrese"),
-            Phone = ConsoleInput.ReadText("Telefon"),
-            Email = ConsoleInput.ReadText("Email"),
-            MembershipCardNumber = ConsoleInput.ReadText("Broj clanske karte"),
-            MembershipYear = ConsoleInput.ReadInt("Godina uplate clanstva"),
+            DateOfBirth = ConsoleInput.ReadDate("Datum rodjenja", new DateOnly(1900, 1, 1), DateOnly.FromDateTime(DateTime.Today)),
+            AddressId = ConsoleInput.ReadExistingId("Id adrese", id => _addressDao.GetAll().Any(a => a.Id == id)),
+            Phone = ConsoleInput.ReadPhone("Telefon"),
+            Email = ConsoleInput.ReadEmail("Email"),
+            MembershipCardNumber = ConsoleInput.ReadUniqueText("Broj clanske karte", _visitorDao.GetAll().Select(v => v.MembershipCardNumber)),
+            MembershipYear = ConsoleInput.ReadInt("Godina uplate clanstva", max: DateTime.Today.Year),
             Status = ReadStatus(),
             AverageRating = ReadRating(),
-            PurchasedBookIds = ConsoleInput.ReadIds("Id-evi kupljenih knjiga"),
-            WishlistBookIds = ConsoleInput.ReadIds("Id-evi knjiga sa liste zelja")
+            PurchasedBookIds = ConsoleInput.ReadExistingIds("Id-evi kupljenih knjiga", id => _bookDao.GetAll().Any(b => b.Id == id)),
+            WishlistBookIds = ConsoleInput.ReadExistingIds("Id-evi knjiga sa liste zelja", id => _bookDao.GetAll().Any(b => b.Id == id))
         };
 
         _visitorDao.Add(visitor);
