@@ -21,10 +21,26 @@ public class BookController
     public void AddBook()
     {
         Console.WriteLine("--- Dodavanje knjige ---");
+        Book book = ReadBook();
+        _bookDao.Add(book);
+        Console.WriteLine($"Knjiga je dodata sa Id {book.Id}.");
+    }
 
-        Book book = new()
+    public void EditBook()
+    {
+        Console.WriteLine("--- Izmena knjige ---");
+        int id = ConsoleInput.ReadExistingId("Id knjige", id => _bookDao.GetAll().Any(b => b.Id == id));
+        Book book = ReadBook(id);
+        _bookDao.Update(book);
+        Console.WriteLine("Knjiga je izmenjena.");
+    }
+
+    private Book ReadBook(int id = 0)
+    {
+        return new Book()
         {
-            Isbn = ConsoleInput.ReadUniqueText("ISBN", _bookDao.GetAll().Select(b => b.Isbn)),
+            Id = id,
+            Isbn = ConsoleInput.ReadUniqueText("ISBN", _bookDao.GetAll().Where(b => b.Id != id).Select(b => b.Isbn)),
             Title = ConsoleInput.ReadText("Naslov"),
             Genre = ConsoleInput.ReadText("Zanr"),
             PublicationYear = ConsoleInput.ReadInt("Godina izdanja", 1450, DateTime.Today.Year + 1),
@@ -35,9 +51,6 @@ public class BookController
             BuyerVisitorIds = ConsoleInput.ReadExistingIds("Id-evi posetilaca kupaca", id => _visitorDao.GetAll().Any(v => v.Id == id)),
             WishlistVisitorIds = ConsoleInput.ReadExistingIds("Id-evi posetilaca sa liste zelja", id => _visitorDao.GetAll().Any(v => v.Id == id))
         };
-
-        _bookDao.Add(book);
-        Console.WriteLine($"Knjiga je dodata sa Id {book.Id}.");
     }
 
     private static decimal ReadPrice()

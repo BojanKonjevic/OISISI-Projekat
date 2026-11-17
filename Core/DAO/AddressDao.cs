@@ -23,5 +23,18 @@ public class AddressDao : IAddressDao
         return address;
     }
 
+    public Address? Update(Address address)
+    {
+        int index = _addresses.FindIndex(a => a.Id == address.Id);
+        if (index < 0)
+        {
+            return null;
+        }
+
+        _addresses[index] = address;
+        _storage.Save(_addresses);
+        return address;
+    }
+
     public List<Address> GetAll() => _addresses;
 }

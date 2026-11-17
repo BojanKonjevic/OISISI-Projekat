@@ -6,5 +6,7 @@ public interface IBookDao
 {
     Book Add(Book book);
 
+    Book? Update(Book book);
+
     List<Book> GetAll();
 }

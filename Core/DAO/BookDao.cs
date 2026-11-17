@@ -23,5 +23,18 @@ public class BookDao : IBookDao
         return book;
     }
 
+    public Book? Update(Book book)
+    {
+        int index = _books.FindIndex(b => b.Id == book.Id);
+        if (index < 0)
+        {
+            return null;
+        }
+
+        _books[index] = book;
+        _storage.Save(_books);
+        return book;
+    }
+
     public List<Book> GetAll() => _books;
 }

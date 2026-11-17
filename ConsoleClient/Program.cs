@@ -12,7 +12,7 @@ VisitorController visitorController = new(visitorDao, addressDao, bookDao);
 PurchaseController purchaseController = new(purchaseDao, visitorDao, bookDao);
 PublisherController publisherController = new(publisherDao, authorDao, bookDao);
 AddressController addressController = new(addressDao);
-AuthorController authorController = new(authorDao, addressDao);
+AuthorController authorController = new(authorDao, addressDao, bookDao);
 BookController bookController = new(bookDao, publisherDao, authorDao, visitorDao);
 
 while (true)
@@ -28,6 +28,9 @@ while (true)
     Console.WriteLine("7. Izmeni posetioca");
     Console.WriteLine("8. Izmeni kupovinu");
     Console.WriteLine("9. Izmeni izdavaca");
+    Console.WriteLine("10. Izmeni adresu");
+    Console.WriteLine("11. Izmeni autora");
+    Console.WriteLine("12. Izmeni knjigu");
     Console.WriteLine("0. Izlaz");
     Console.Write("Izbor: ");
 
@@ -66,6 +69,15 @@ while (true)
             break;
         case "9":
             publisherController.EditPublisher();
+            break;
+        case "10":
+            addressController.EditAddress();
+            break;
+        case "11":
+            authorController.EditAuthor();
+            break;
+        case "12":
+            bookController.EditBook();
             break;
         default:
             Console.WriteLine("Nepostojeca opcija.");

@@ -23,5 +23,18 @@ public class AuthorDao : IAuthorDao
         return author;
     }
 
+    public Author? Update(Author author)
+    {
+        int index = _authors.FindIndex(a => a.Id == author.Id);
+        if (index < 0)
+        {
+            return null;
+        }
+
+        _authors[index] = author;
+        _storage.Save(_authors);
+        return author;
+    }
+
     public List<Author> GetAll() => _authors;
 }
