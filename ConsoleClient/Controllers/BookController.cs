@@ -40,7 +40,7 @@ public class BookController
         return new Book()
         {
             Id = id,
-            Isbn = ConsoleInput.ReadUniqueText("ISBN", _bookDao.GetAll().Where(b => b.Id != id).Select(b => b.Isbn)),
+            Isbn = ReadIsbn(id),
             Title = ConsoleInput.ReadText("Naslov"),
             Genre = ConsoleInput.ReadText("Zanr"),
             PublicationYear = ConsoleInput.ReadInt("Godina izdanja", 1450, DateTime.Today.Year + 1),
@@ -51,6 +51,27 @@ public class BookController
             BuyerVisitorIds = ConsoleInput.ReadExistingIds("Id-evi posetilaca kupaca", id => _visitorDao.GetAll().Any(v => v.Id == id)),
             WishlistVisitorIds = ConsoleInput.ReadExistingIds("Id-evi posetilaca sa liste zelja", id => _visitorDao.GetAll().Any(v => v.Id == id))
         };
+    }
+
+    private string ReadIsbn(int id)
+    {
+        while (true)
+        {
+            string isbn = ConsoleInput.ReadText("ISBN");
+            if (!isbn.All(char.IsAsciiDigit))
+            {
+                Console.WriteLine("ISBN moze sadrzati samo cifre.");
+                continue;
+            }
+
+            if (_bookDao.GetAll().Any(b => b.Id != id && b.Isbn == isbn))
+            {
+                Console.WriteLine("Vec postoji knjiga sa unetim ISBN-om.");
+                continue;
+            }
+
+            return isbn;
+        }
     }
 
     private static decimal ReadPrice()
