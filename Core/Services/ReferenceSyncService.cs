@@ -30,11 +30,9 @@ public class ReferenceSyncService
 
         foreach (Visitor visitor in visitors)
         {
-            visitor.PurchasedBookIds = purchases
-                .Where(p => p.VisitorId == visitor.Id)
-                .Select(p => p.BookId)
-                .Distinct()
-                .ToList();
+            List<Purchase> visitorPurchases = purchases.Where(p => p.VisitorId == visitor.Id).ToList();
+            visitor.PurchasedBookIds = visitorPurchases.Select(p => p.BookId).Distinct().ToList();
+            visitor.AverageRating = visitorPurchases.Count == 0 ? 0 : visitorPurchases.Average(p => p.Rating);
             _visitorDao.Update(visitor);
         }
 

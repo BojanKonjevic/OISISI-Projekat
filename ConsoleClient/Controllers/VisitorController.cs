@@ -79,7 +79,6 @@ public class VisitorController
             MembershipCardNumber = ConsoleInput.ReadUniqueText("Broj clanske karte", _visitorDao.GetAll().Where(v => v.Id != id).Select(v => v.MembershipCardNumber)),
             MembershipYear = ConsoleInput.ReadInt("Godina uplate clanstva", max: DateTime.Today.Year),
             Status = ReadStatus(),
-            AverageRating = ReadRating(),
             WishlistBookIds = ConsoleInput.ReadExistingIds("Id-evi knjiga sa liste zelja", id => _bookDao.GetAll().Any(b => b.Id == id))
         };
     }
@@ -101,20 +100,6 @@ public class VisitorController
             }
 
             ConsoleOutput.Error("Unesite 1 ili 2.");
-        }
-    }
-
-    private static double ReadRating()
-    {
-        while (true)
-        {
-            Console.Write("Prosecna ocena (0-5): ");
-            if (double.TryParse(Console.ReadLine()?.Trim(), System.Globalization.CultureInfo.InvariantCulture, out double value) && value >= 0 && value <= 5)
-            {
-                return value;
-            }
-
-            ConsoleOutput.Error("Unesite broj od 0 do 5.");
         }
     }
 }
