@@ -1,5 +1,6 @@
 using Core.DAO;
 using Core.Models;
+using Core.Services;
 
 namespace ConsoleClient.Controllers;
 
@@ -8,12 +9,16 @@ public class VisitorController
     private readonly VisitorDao _visitorDao;
     private readonly AddressDao _addressDao;
     private readonly BookDao _bookDao;
+    private readonly PurchaseDao _purchaseDao;
+    private readonly ReferenceSyncService _referenceSync;
 
-    public VisitorController(VisitorDao visitorDao, AddressDao addressDao, BookDao bookDao)
+    public VisitorController(VisitorDao visitorDao, AddressDao addressDao, BookDao bookDao, PurchaseDao purchaseDao, ReferenceSyncService referenceSync)
     {
         _visitorDao = visitorDao;
         _addressDao = addressDao;
         _bookDao = bookDao;
+        _purchaseDao = purchaseDao;
+        _referenceSync = referenceSync;
     }
 
     public void AddVisitor()
@@ -21,6 +26,7 @@ public class VisitorController
         Console.WriteLine("--- Dodavanje posetioca ---");
         Visitor visitor = ReadVisitor();
         _visitorDao.Add(visitor);
+        _referenceSync.SyncAll();
         ConsoleOutput.Success($"Posetilac je dodat sa Id {visitor.Id}.");
     }
 
@@ -30,6 +36,7 @@ public class VisitorController
         int id = ConsoleInput.ReadExistingId("Id posetioca", id => _visitorDao.GetAll().Any(v => v.Id == id));
         Visitor visitor = ReadVisitor(id);
         _visitorDao.Update(visitor);
+        _referenceSync.SyncAll();
         ConsoleOutput.Success("Posetilac je izmenjen.");
     }
 
@@ -47,7 +54,14 @@ public class VisitorController
     {
         Console.WriteLine("--- Brisanje posetioca ---");
         int id = ConsoleInput.ReadExistingId("Id posetioca", id => _visitorDao.GetAll().Any(v => v.Id == id));
+        if (_purchaseDao.GetAll().Any(p => p.VisitorId == id))
+        {
+            ConsoleOutput.Error("Posetilac ne moze biti obrisan jer ima kupovine.");
+            return;
+        }
+
         _visitorDao.Remove(id);
+        _referenceSync.SyncAll();
         ConsoleOutput.Success("Posetilac je obrisan.");
     }
 
@@ -66,7 +80,6 @@ public class VisitorController
             MembershipYear = ConsoleInput.ReadInt("Godina uplate clanstva", max: DateTime.Today.Year),
             Status = ReadStatus(),
             AverageRating = ReadRating(),
-            PurchasedBookIds = ConsoleInput.ReadExistingIds("Id-evi kupljenih knjiga", id => _bookDao.GetAll().Any(b => b.Id == id)),
             WishlistBookIds = ConsoleInput.ReadExistingIds("Id-evi knjiga sa liste zelja", id => _bookDao.GetAll().Any(b => b.Id == id))
         };
     }

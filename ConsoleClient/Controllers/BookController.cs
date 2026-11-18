@@ -1,5 +1,6 @@
 using Core.DAO;
 using Core.Models;
+using Core.Services;
 
 namespace ConsoleClient.Controllers;
 
@@ -8,14 +9,16 @@ public class BookController
     private readonly BookDao _bookDao;
     private readonly PublisherDao _publisherDao;
     private readonly AuthorDao _authorDao;
-    private readonly VisitorDao _visitorDao;
+    private readonly PurchaseDao _purchaseDao;
+    private readonly ReferenceSyncService _referenceSync;
 
-    public BookController(BookDao bookDao, PublisherDao publisherDao, AuthorDao authorDao, VisitorDao visitorDao)
+    public BookController(BookDao bookDao, PublisherDao publisherDao, AuthorDao authorDao, PurchaseDao purchaseDao, ReferenceSyncService referenceSync)
     {
         _bookDao = bookDao;
         _publisherDao = publisherDao;
         _authorDao = authorDao;
-        _visitorDao = visitorDao;
+        _purchaseDao = purchaseDao;
+        _referenceSync = referenceSync;
     }
 
     public void AddBook()
@@ -23,6 +26,7 @@ public class BookController
         Console.WriteLine("--- Dodavanje knjige ---");
         Book book = ReadBook();
         _bookDao.Add(book);
+        _referenceSync.SyncAll();
         ConsoleOutput.Success($"Knjiga je dodata sa Id {book.Id}.");
     }
 
@@ -32,6 +36,7 @@ public class BookController
         int id = ConsoleInput.ReadExistingId("Id knjige", id => _bookDao.GetAll().Any(b => b.Id == id));
         Book book = ReadBook(id);
         _bookDao.Update(book);
+        _referenceSync.SyncAll();
         ConsoleOutput.Success("Knjiga je izmenjena.");
     }
 
@@ -49,7 +54,14 @@ public class BookController
     {
         Console.WriteLine("--- Brisanje knjige ---");
         int id = ConsoleInput.ReadExistingId("Id knjige", id => _bookDao.GetAll().Any(b => b.Id == id));
+        if (_purchaseDao.GetAll().Any(p => p.BookId == id))
+        {
+            ConsoleOutput.Error("Knjiga ne moze biti obrisana jer postoje kupovine te knjige.");
+            return;
+        }
+
         _bookDao.Remove(id);
+        _referenceSync.SyncAll();
         ConsoleOutput.Success("Knjiga je obrisana.");
     }
 
@@ -66,8 +78,6 @@ public class BookController
             PageCount = ConsoleInput.ReadInt("Broj strana", 1),
             AuthorIds = ConsoleInput.ReadExistingIds("Id-evi autora", id => _authorDao.GetAll().Any(a => a.Id == id)),
             PublisherId = ConsoleInput.ReadExistingId("Id izdavaca", id => _publisherDao.GetAll().Any(p => p.Id == id)),
-            BuyerVisitorIds = ConsoleInput.ReadExistingIds("Id-evi posetilaca kupaca", id => _visitorDao.GetAll().Any(v => v.Id == id)),
-            WishlistVisitorIds = ConsoleInput.ReadExistingIds("Id-evi posetilaca sa liste zelja", id => _visitorDao.GetAll().Any(v => v.Id == id))
         };
     }
 

@@ -1,5 +1,6 @@
 using Core.DAO;
 using Core.Models;
+using Core.Services;
 
 namespace ConsoleClient.Controllers;
 
@@ -8,12 +9,14 @@ public class PurchaseController
     private readonly PurchaseDao _purchaseDao;
     private readonly VisitorDao _visitorDao;
     private readonly BookDao _bookDao;
+    private readonly ReferenceSyncService _referenceSync;
 
-    public PurchaseController(PurchaseDao purchaseDao, VisitorDao visitorDao, BookDao bookDao)
+    public PurchaseController(PurchaseDao purchaseDao, VisitorDao visitorDao, BookDao bookDao, ReferenceSyncService referenceSync)
     {
         _purchaseDao = purchaseDao;
         _visitorDao = visitorDao;
         _bookDao = bookDao;
+        _referenceSync = referenceSync;
     }
 
     public void AddPurchase()
@@ -21,6 +24,7 @@ public class PurchaseController
         Console.WriteLine("--- Dodavanje kupovine ---");
         Purchase purchase = ReadPurchase();
         _purchaseDao.Add(purchase);
+        _referenceSync.SyncAll();
         ConsoleOutput.Success($"Kupovina je dodata sa Id {purchase.Id}.");
     }
 
@@ -30,6 +34,7 @@ public class PurchaseController
         int id = ConsoleInput.ReadExistingId("Id kupovine", id => _purchaseDao.GetAll().Any(p => p.Id == id));
         Purchase purchase = ReadPurchase(id);
         _purchaseDao.Update(purchase);
+        _referenceSync.SyncAll();
         ConsoleOutput.Success("Kupovina je izmenjena.");
     }
 
@@ -48,6 +53,7 @@ public class PurchaseController
         Console.WriteLine("--- Brisanje kupovine ---");
         int id = ConsoleInput.ReadExistingId("Id kupovine", id => _purchaseDao.GetAll().Any(p => p.Id == id));
         _purchaseDao.Remove(id);
+        _referenceSync.SyncAll();
         ConsoleOutput.Success("Kupovina je obrisana.");
     }
 

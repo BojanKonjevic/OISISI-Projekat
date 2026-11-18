@@ -1,5 +1,6 @@
 using Core.DAO;
 using Core.Models;
+using Core.Services;
 
 namespace ConsoleClient.Controllers;
 
@@ -8,12 +9,16 @@ public class AuthorController
     private readonly AuthorDao _authorDao;
     private readonly AddressDao _addressDao;
     private readonly BookDao _bookDao;
+    private readonly PublisherDao _publisherDao;
+    private readonly ReferenceSyncService _referenceSync;
 
-    public AuthorController(AuthorDao authorDao, AddressDao addressDao, BookDao bookDao)
+    public AuthorController(AuthorDao authorDao, AddressDao addressDao, BookDao bookDao, PublisherDao publisherDao, ReferenceSyncService referenceSync)
     {
         _authorDao = authorDao;
         _addressDao = addressDao;
         _bookDao = bookDao;
+        _publisherDao = publisherDao;
+        _referenceSync = referenceSync;
     }
 
     public void AddAuthor()
@@ -47,7 +52,20 @@ public class AuthorController
     {
         Console.WriteLine("--- Brisanje autora ---");
         int id = ConsoleInput.ReadExistingId("Id autora", id => _authorDao.GetAll().Any(a => a.Id == id));
+        if (_bookDao.GetAll().Any(b => b.AuthorIds.Contains(id) && b.AuthorIds.Count == 1))
+        {
+            ConsoleOutput.Error("Autor ne moze biti obrisan jer je jedini autor knjige.");
+            return;
+        }
+
+        if (_publisherDao.GetAll().Any(p => p.HeadAuthorId == id || p.AuthorIds.Contains(id)))
+        {
+            ConsoleOutput.Error("Autor ne moze biti obrisan jer ga referenciraju izdavaci.");
+            return;
+        }
+
         _authorDao.Remove(id);
+        _referenceSync.SyncAll();
         ConsoleOutput.Success("Autor je obrisan.");
     }
 
@@ -63,8 +81,7 @@ public class AuthorController
             Phone = ConsoleInput.ReadPhone("Telefon"),
             Email = ConsoleInput.ReadEmail("Email"),
             IdCardNumber = ConsoleInput.ReadText("Broj licne karte"),
-            YearsOfExperience = ConsoleInput.ReadInt("Godine iskustva"),
-            BookIds = ConsoleInput.ReadExistingIds("Id-evi knjiga", id => _bookDao.GetAll().Any(b => b.Id == id))
+            YearsOfExperience = ConsoleInput.ReadInt("Godine iskustva")
         };
     }
 }

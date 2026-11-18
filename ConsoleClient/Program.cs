@@ -1,5 +1,6 @@
 using ConsoleClient.Controllers;
 using Core.DAO;
+using Core.Services;
 
 VisitorDao visitorDao = new();
 PurchaseDao purchaseDao = new();
@@ -8,12 +9,15 @@ AddressDao addressDao = new();
 AuthorDao authorDao = new();
 BookDao bookDao = new();
 
-VisitorController visitorController = new(visitorDao, addressDao, bookDao);
-PurchaseController purchaseController = new(purchaseDao, visitorDao, bookDao);
+ReferenceSyncService referenceSync = new(visitorDao, purchaseDao, publisherDao, authorDao, bookDao);
+referenceSync.SyncAll();
+
+VisitorController visitorController = new(visitorDao, addressDao, bookDao, purchaseDao, referenceSync);
+PurchaseController purchaseController = new(purchaseDao, visitorDao, bookDao, referenceSync);
 PublisherController publisherController = new(publisherDao, authorDao, bookDao);
-AddressController addressController = new(addressDao);
-AuthorController authorController = new(authorDao, addressDao, bookDao);
-BookController bookController = new(bookDao, publisherDao, authorDao, visitorDao);
+AddressController addressController = new(addressDao, visitorDao, authorDao);
+AuthorController authorController = new(authorDao, addressDao, bookDao, publisherDao, referenceSync);
+BookController bookController = new(bookDao, publisherDao, authorDao, purchaseDao, referenceSync);
 
 while (true)
 {

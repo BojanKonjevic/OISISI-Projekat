@@ -6,10 +6,14 @@ namespace ConsoleClient.Controllers;
 public class AddressController
 {
     private readonly AddressDao _addressDao;
+    private readonly VisitorDao _visitorDao;
+    private readonly AuthorDao _authorDao;
 
-    public AddressController(AddressDao addressDao)
+    public AddressController(AddressDao addressDao, VisitorDao visitorDao, AuthorDao authorDao)
     {
         _addressDao = addressDao;
+        _visitorDao = visitorDao;
+        _authorDao = authorDao;
     }
 
     public void AddAddress()
@@ -43,6 +47,13 @@ public class AddressController
     {
         Console.WriteLine("--- Brisanje adrese ---");
         int id = ConsoleInput.ReadExistingId("Id adrese", id => _addressDao.GetAll().Any(a => a.Id == id));
+        if (_visitorDao.GetAll().Any(v => v.AddressId == id) ||
+            _authorDao.GetAll().Any(a => a.AddressId == id))
+        {
+            ConsoleOutput.Error("Adresa ne moze biti obrisana jer je referenciraju posetioci ili autori.");
+            return;
+        }
+
         _addressDao.Remove(id);
         ConsoleOutput.Success("Adresa je obrisana.");
     }

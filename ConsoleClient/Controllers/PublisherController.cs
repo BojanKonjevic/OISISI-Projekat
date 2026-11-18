@@ -47,6 +47,12 @@ public class PublisherController
     {
         Console.WriteLine("--- Brisanje izdavaca ---");
         int id = ConsoleInput.ReadExistingId("Id izdavaca", id => _publisherDao.GetAll().Any(p => p.Id == id));
+        if (_bookDao.GetAll().Any(b => b.PublisherId == id))
+        {
+            ConsoleOutput.Error("Izdavac ne moze biti obrisan jer ga referenciraju knjige.");
+            return;
+        }
+
         _publisherDao.Remove(id);
         ConsoleOutput.Success("Izdavac je obrisan.");
     }
@@ -59,8 +65,7 @@ public class PublisherController
             Code = ConsoleInput.ReadUniqueText("Sifra", _publisherDao.GetAll().Where(p => p.Id != id).Select(p => p.Code)),
             Name = ConsoleInput.ReadText("Naziv"),
             HeadAuthorId = ReadHeadAuthorId(),
-            AuthorIds = ConsoleInput.ReadExistingIds("Id-evi autora", id => _authorDao.GetAll().Any(a => a.Id == id)),
-            BookIds = ConsoleInput.ReadExistingIds("Id-evi knjiga", id => _bookDao.GetAll().Any(b => b.Id == id))
+            AuthorIds = ConsoleInput.ReadExistingIds("Id-evi autora", id => _authorDao.GetAll().Any(a => a.Id == id))
         };
     }
 
