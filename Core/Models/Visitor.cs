@@ -19,6 +19,11 @@ public class Visitor : ISerializable
     public List<int> PurchasedBookIds { get; set; } = [];
     public List<int> WishlistBookIds { get; set; } = [];
 
+    public override string ToString()
+    {
+        return $"Id: {Id} | Ime: {FirstName} | Prezime: {LastName} | Datum rodjenja: {DateOfBirth:yyyy-MM-dd} | Adresa: {AddressId} | Telefon: {Phone} | Email: {Email} | Br. clanske karte: {MembershipCardNumber} | Godina: {MembershipYear} | Status: {Status} | Ocena: {AverageRating} | Kupljene knjige: [{string.Join(",", PurchasedBookIds)}] | Lista zelja: [{string.Join(",", WishlistBookIds)}]";
+    }
+
     public string[] ToCSV()
     {
         return

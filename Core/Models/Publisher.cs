@@ -11,6 +11,11 @@ public class Publisher : ISerializable
     public List<int> AuthorIds { get; set; } = [];
     public List<int> BookIds { get; set; } = [];
 
+    public override string ToString()
+    {
+        return $"Id: {Id} | Sifra: {Code} | Naziv: {Name} | Sef: {HeadAuthorId?.ToString() ?? "-"} | Autori: [{string.Join(",", AuthorIds)}] | Knjige: [{string.Join(",", BookIds)}]";
+    }
+
     public string[] ToCSV()
     {
         return

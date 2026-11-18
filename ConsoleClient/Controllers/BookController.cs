@@ -23,7 +23,7 @@ public class BookController
         Console.WriteLine("--- Dodavanje knjige ---");
         Book book = ReadBook();
         _bookDao.Add(book);
-        Console.WriteLine($"Knjiga je dodata sa Id {book.Id}.");
+        ConsoleOutput.Success($"Knjiga je dodata sa Id {book.Id}.");
     }
 
     public void EditBook()
@@ -32,7 +32,17 @@ public class BookController
         int id = ConsoleInput.ReadExistingId("Id knjige", id => _bookDao.GetAll().Any(b => b.Id == id));
         Book book = ReadBook(id);
         _bookDao.Update(book);
-        Console.WriteLine("Knjiga je izmenjena.");
+        ConsoleOutput.Success("Knjiga je izmenjena.");
+    }
+
+    public void ShowBooks()
+    {
+        ConsoleOutput.Header("\n===== KNJIGE =====");
+        foreach (Book book in _bookDao.GetAll())
+        {
+            Console.WriteLine(book);
+            ConsoleOutput.Divider();
+        }
     }
 
     public void DeleteBook()
@@ -40,7 +50,7 @@ public class BookController
         Console.WriteLine("--- Brisanje knjige ---");
         int id = ConsoleInput.ReadExistingId("Id knjige", id => _bookDao.GetAll().Any(b => b.Id == id));
         _bookDao.Remove(id);
-        Console.WriteLine("Knjiga je obrisana.");
+        ConsoleOutput.Success("Knjiga je obrisana.");
     }
 
     private Book ReadBook(int id = 0)
@@ -68,13 +78,13 @@ public class BookController
             string isbn = ConsoleInput.ReadText("ISBN");
             if (!isbn.All(char.IsAsciiDigit))
             {
-                Console.WriteLine("ISBN moze sadrzati samo cifre.");
+                ConsoleOutput.Error("ISBN moze sadrzati samo cifre.");
                 continue;
             }
 
             if (_bookDao.GetAll().Any(b => b.Id != id && b.Isbn == isbn))
             {
-                Console.WriteLine("Vec postoji knjiga sa unetim ISBN-om.");
+                ConsoleOutput.Error("Vec postoji knjiga sa unetim ISBN-om.");
                 continue;
             }
 
@@ -94,7 +104,7 @@ public class BookController
                 return value;
             }
 
-            Console.WriteLine("Unesite pozitivan broj za cenu.");
+            ConsoleOutput.Error("Unesite pozitivan broj za cenu.");
         }
     }
 }

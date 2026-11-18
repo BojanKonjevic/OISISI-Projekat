@@ -15,7 +15,7 @@ public static class ConsoleInput
                 return input;
             }
 
-            Console.WriteLine("Unos ne sme biti prazan.");
+            ConsoleOutput.Error("Unos ne sme biti prazan.");
         }
     }
 
@@ -29,7 +29,7 @@ public static class ConsoleInput
                 return value;
             }
 
-            Console.WriteLine(max is null
+            ConsoleOutput.Error(max is null
                 ? $"Unesite ceo broj najmanje {min}."
                 : $"Unesite broj od {min} do {max}.");
         }
@@ -44,20 +44,20 @@ public static class ConsoleInput
             {
                 if (min is not null && value < min)
                 {
-                    Console.WriteLine($"Datum ne sme biti pre {min.Value:yyyy-MM-dd}.");
+                    ConsoleOutput.Error($"Datum ne sme biti pre {min.Value:yyyy-MM-dd}.");
                     continue;
                 }
 
                 if (max is not null && value > max)
                 {
-                    Console.WriteLine("Datum ne sme biti u buducnosti.");
+                    ConsoleOutput.Error("Datum ne sme biti u buducnosti.");
                     continue;
                 }
 
                 return value;
             }
 
-            Console.WriteLine("Unesite datum u formatu gggg-mm-dd.");
+            ConsoleOutput.Error("Unesite datum u formatu gggg-mm-dd.");
         }
     }
 
@@ -71,7 +71,7 @@ public static class ConsoleInput
                 return value;
             }
 
-            Console.WriteLine("Email mora sadrzati znak @.");
+            ConsoleOutput.Error("Email mora sadrzati znak @.");
         }
     }
 
@@ -85,7 +85,7 @@ public static class ConsoleInput
                 return value;
             }
 
-            Console.WriteLine("Telefon moze sadrzati samo cifre i znakove + - ( ).");
+            ConsoleOutput.Error("Telefon moze sadrzati samo cifre i znakove + - ( ).");
         }
     }
 
@@ -100,7 +100,7 @@ public static class ConsoleInput
                 return value;
             }
 
-            Console.WriteLine("Vec postoji entitet sa unetom vrednoscu.");
+            ConsoleOutput.Error("Vec postoji entitet sa unetom vrednoscu.");
         }
     }
 
@@ -114,7 +114,7 @@ public static class ConsoleInput
                 return id;
             }
 
-            Console.WriteLine($"Entitet sa Id {id} ne postoji.");
+            ConsoleOutput.Error($"Entitet sa Id {id} ne postoji.");
         }
     }
 
@@ -130,7 +130,7 @@ public static class ConsoleInput
 
             foreach (int id in ids.Where(id => !exists(id)))
             {
-                Console.WriteLine($"Entitet sa Id {id} ne postoji.");
+                ConsoleOutput.Error($"Entitet sa Id {id} ne postoji.");
             }
         }
     }

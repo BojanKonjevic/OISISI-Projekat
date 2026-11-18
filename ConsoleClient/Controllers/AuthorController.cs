@@ -21,7 +21,7 @@ public class AuthorController
         Console.WriteLine("--- Dodavanje autora ---");
         Author author = ReadAuthor();
         _authorDao.Add(author);
-        Console.WriteLine($"Autor je dodat sa Id {author.Id}.");
+        ConsoleOutput.Success($"Autor je dodat sa Id {author.Id}.");
     }
 
     public void EditAuthor()
@@ -30,7 +30,17 @@ public class AuthorController
         int id = ConsoleInput.ReadExistingId("Id autora", id => _authorDao.GetAll().Any(a => a.Id == id));
         Author author = ReadAuthor(id);
         _authorDao.Update(author);
-        Console.WriteLine("Autor je izmenjen.");
+        ConsoleOutput.Success("Autor je izmenjen.");
+    }
+
+    public void ShowAuthors()
+    {
+        ConsoleOutput.Header("\n===== AUTORI =====");
+        foreach (Author author in _authorDao.GetAll())
+        {
+            Console.WriteLine(author);
+            ConsoleOutput.Divider();
+        }
     }
 
     public void DeleteAuthor()
@@ -38,7 +48,7 @@ public class AuthorController
         Console.WriteLine("--- Brisanje autora ---");
         int id = ConsoleInput.ReadExistingId("Id autora", id => _authorDao.GetAll().Any(a => a.Id == id));
         _authorDao.Remove(id);
-        Console.WriteLine("Autor je obrisan.");
+        ConsoleOutput.Success("Autor je obrisan.");
     }
 
     private Author ReadAuthor(int id = 0)

@@ -17,7 +17,7 @@ public class AddressController
         Console.WriteLine("--- Dodavanje adrese ---");
         Address address = ReadAddress();
         _addressDao.Add(address);
-        Console.WriteLine($"Adresa je dodata sa Id {address.Id}.");
+        ConsoleOutput.Success($"Adresa je dodata sa Id {address.Id}.");
     }
 
     public void EditAddress()
@@ -26,7 +26,17 @@ public class AddressController
         int id = ConsoleInput.ReadExistingId("Id adrese", id => _addressDao.GetAll().Any(a => a.Id == id));
         Address address = ReadAddress(id);
         _addressDao.Update(address);
-        Console.WriteLine("Adresa je izmenjena.");
+        ConsoleOutput.Success("Adresa je izmenjena.");
+    }
+
+    public void ShowAddresses()
+    {
+        ConsoleOutput.Header("\n===== ADRESE =====");
+        foreach (Address address in _addressDao.GetAll())
+        {
+            Console.WriteLine(address);
+            ConsoleOutput.Divider();
+        }
     }
 
     public void DeleteAddress()
@@ -34,7 +44,7 @@ public class AddressController
         Console.WriteLine("--- Brisanje adrese ---");
         int id = ConsoleInput.ReadExistingId("Id adrese", id => _addressDao.GetAll().Any(a => a.Id == id));
         _addressDao.Remove(id);
-        Console.WriteLine("Adresa je obrisana.");
+        ConsoleOutput.Success("Adresa je obrisana.");
     }
 
     private Address ReadAddress(int id = 0)

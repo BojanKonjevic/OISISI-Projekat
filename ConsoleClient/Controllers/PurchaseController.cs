@@ -21,7 +21,7 @@ public class PurchaseController
         Console.WriteLine("--- Dodavanje kupovine ---");
         Purchase purchase = ReadPurchase();
         _purchaseDao.Add(purchase);
-        Console.WriteLine($"Kupovina je dodata sa Id {purchase.Id}.");
+        ConsoleOutput.Success($"Kupovina je dodata sa Id {purchase.Id}.");
     }
 
     public void EditPurchase()
@@ -30,7 +30,17 @@ public class PurchaseController
         int id = ConsoleInput.ReadExistingId("Id kupovine", id => _purchaseDao.GetAll().Any(p => p.Id == id));
         Purchase purchase = ReadPurchase(id);
         _purchaseDao.Update(purchase);
-        Console.WriteLine("Kupovina je izmenjena.");
+        ConsoleOutput.Success("Kupovina je izmenjena.");
+    }
+
+    public void ShowPurchases()
+    {
+        ConsoleOutput.Header("\n===== KUPOVINE =====");
+        foreach (Purchase purchase in _purchaseDao.GetAll())
+        {
+            Console.WriteLine(purchase);
+            ConsoleOutput.Divider();
+        }
     }
 
     public void DeletePurchase()
@@ -38,7 +48,7 @@ public class PurchaseController
         Console.WriteLine("--- Brisanje kupovine ---");
         int id = ConsoleInput.ReadExistingId("Id kupovine", id => _purchaseDao.GetAll().Any(p => p.Id == id));
         _purchaseDao.Remove(id);
-        Console.WriteLine("Kupovina je obrisana.");
+        ConsoleOutput.Success("Kupovina je obrisana.");
     }
 
     private Purchase ReadPurchase(int id = 0)
@@ -64,7 +74,7 @@ public class PurchaseController
                 return value;
             }
 
-            Console.WriteLine("Unesite broj od 1 do 5.");
+            ConsoleOutput.Error("Unesite broj od 1 do 5.");
         }
     }
 }

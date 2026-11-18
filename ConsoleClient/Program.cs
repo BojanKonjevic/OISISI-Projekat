@@ -18,25 +18,13 @@ BookController bookController = new(bookDao, publisherDao, authorDao, visitorDao
 while (true)
 {
     Console.WriteLine();
-    Console.WriteLine("=== Sajam knjiga ===");
-    Console.WriteLine("1. Dodaj posetioca");
-    Console.WriteLine("2. Dodaj kupovinu");
-    Console.WriteLine("3. Dodaj izdavaca");
-    Console.WriteLine("4. Dodaj adresu");
-    Console.WriteLine("5. Dodaj autora");
-    Console.WriteLine("6. Dodaj knjigu");
-    Console.WriteLine("7. Izmeni posetioca");
-    Console.WriteLine("8. Izmeni kupovinu");
-    Console.WriteLine("9. Izmeni izdavaca");
-    Console.WriteLine("10. Izmeni adresu");
-    Console.WriteLine("11. Izmeni autora");
-    Console.WriteLine("12. Izmeni knjigu");
-    Console.WriteLine("13. Obrisi posetioca");
-    Console.WriteLine("14. Obrisi kupovinu");
-    Console.WriteLine("15. Obrisi izdavaca");
-    Console.WriteLine("16. Obrisi adresu");
-    Console.WriteLine("17. Obrisi autora");
-    Console.WriteLine("18. Obrisi knjigu");
+    ConsoleOutput.Header("=== Sajam knjiga ===");
+    Console.WriteLine("1. Posetioci");
+    Console.WriteLine("2. Kupovine");
+    Console.WriteLine("3. Izdavaci");
+    Console.WriteLine("4. Adrese");
+    Console.WriteLine("5. Autori");
+    Console.WriteLine("6. Knjige");
     Console.WriteLine("0. Izlaz");
     Console.Write("Izbor: ");
 
@@ -50,61 +38,66 @@ while (true)
     switch (choice)
     {
         case "1":
-            visitorController.AddVisitor();
+            RunEntityMenu("Posetioci", visitorController.AddVisitor, visitorController.EditVisitor, visitorController.DeleteVisitor, visitorController.ShowVisitors);
             break;
         case "2":
-            purchaseController.AddPurchase();
+            RunEntityMenu("Kupovine", purchaseController.AddPurchase, purchaseController.EditPurchase, purchaseController.DeletePurchase, purchaseController.ShowPurchases);
             break;
         case "3":
-            publisherController.AddPublisher();
+            RunEntityMenu("Izdavaci", publisherController.AddPublisher, publisherController.EditPublisher, publisherController.DeletePublisher, publisherController.ShowPublishers);
             break;
         case "4":
-            addressController.AddAddress();
+            RunEntityMenu("Adrese", addressController.AddAddress, addressController.EditAddress, addressController.DeleteAddress, addressController.ShowAddresses);
             break;
         case "5":
-            authorController.AddAuthor();
+            RunEntityMenu("Autori", authorController.AddAuthor, authorController.EditAuthor, authorController.DeleteAuthor, authorController.ShowAuthors);
             break;
         case "6":
-            bookController.AddBook();
-            break;
-        case "7":
-            visitorController.EditVisitor();
-            break;
-        case "8":
-            purchaseController.EditPurchase();
-            break;
-        case "9":
-            publisherController.EditPublisher();
-            break;
-        case "10":
-            addressController.EditAddress();
-            break;
-        case "11":
-            authorController.EditAuthor();
-            break;
-        case "12":
-            bookController.EditBook();
-            break;
-        case "13":
-            visitorController.DeleteVisitor();
-            break;
-        case "14":
-            purchaseController.DeletePurchase();
-            break;
-        case "15":
-            publisherController.DeletePublisher();
-            break;
-        case "16":
-            addressController.DeleteAddress();
-            break;
-        case "17":
-            authorController.DeleteAuthor();
-            break;
-        case "18":
-            bookController.DeleteBook();
+            RunEntityMenu("Knjige", bookController.AddBook, bookController.EditBook, bookController.DeleteBook, bookController.ShowBooks);
             break;
         default:
-            Console.WriteLine("Nepostojeca opcija.");
+            ConsoleOutput.Error("Nepostojeca opcija.");
             break;
+    }
+}
+
+void RunEntityMenu(string title, Action add, Action edit, Action remove, Action show)
+{
+    while (true)
+    {
+        Console.WriteLine();
+        ConsoleOutput.Header($"=== {title} ===");
+        Console.WriteLine("1. Dodaj");
+        Console.WriteLine("2. Izmeni");
+        Console.WriteLine("3. Obrisi");
+        Console.WriteLine("4. Prikazi");
+        Console.WriteLine("0. Nazad");
+        Console.Write("Izbor: ");
+
+        string? choice = Console.ReadLine()?.Trim();
+
+        if (choice is null || choice == "0")
+        {
+            return;
+        }
+
+        switch (choice)
+        {
+            case "1":
+                add();
+                break;
+            case "2":
+                edit();
+                break;
+            case "3":
+                remove();
+                break;
+            case "4":
+                show();
+                break;
+            default:
+                ConsoleOutput.Error("Nepostojeca opcija.");
+                break;
+        }
     }
 }

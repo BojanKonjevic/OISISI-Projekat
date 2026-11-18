@@ -21,7 +21,7 @@ public class VisitorController
         Console.WriteLine("--- Dodavanje posetioca ---");
         Visitor visitor = ReadVisitor();
         _visitorDao.Add(visitor);
-        Console.WriteLine($"Posetilac je dodat sa Id {visitor.Id}.");
+        ConsoleOutput.Success($"Posetilac je dodat sa Id {visitor.Id}.");
     }
 
     public void EditVisitor()
@@ -30,7 +30,17 @@ public class VisitorController
         int id = ConsoleInput.ReadExistingId("Id posetioca", id => _visitorDao.GetAll().Any(v => v.Id == id));
         Visitor visitor = ReadVisitor(id);
         _visitorDao.Update(visitor);
-        Console.WriteLine("Posetilac je izmenjen.");
+        ConsoleOutput.Success("Posetilac je izmenjen.");
+    }
+
+    public void ShowVisitors()
+    {
+        ConsoleOutput.Header("\n===== POSETIOCI =====");
+        foreach (Visitor visitor in _visitorDao.GetAll())
+        {
+            Console.WriteLine(visitor);
+            ConsoleOutput.Divider();
+        }
     }
 
     public void DeleteVisitor()
@@ -38,7 +48,7 @@ public class VisitorController
         Console.WriteLine("--- Brisanje posetioca ---");
         int id = ConsoleInput.ReadExistingId("Id posetioca", id => _visitorDao.GetAll().Any(v => v.Id == id));
         _visitorDao.Remove(id);
-        Console.WriteLine("Posetilac je obrisan.");
+        ConsoleOutput.Success("Posetilac je obrisan.");
     }
 
     private Visitor ReadVisitor(int id = 0)
@@ -77,7 +87,7 @@ public class VisitorController
                 return MembershipStatus.Vip;
             }
 
-            Console.WriteLine("Unesite 1 ili 2.");
+            ConsoleOutput.Error("Unesite 1 ili 2.");
         }
     }
 
@@ -91,7 +101,7 @@ public class VisitorController
                 return value;
             }
 
-            Console.WriteLine("Unesite broj od 0 do 5.");
+            ConsoleOutput.Error("Unesite broj od 0 do 5.");
         }
     }
 }

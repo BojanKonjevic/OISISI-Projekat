@@ -15,6 +15,11 @@ public class Author : ISerializable
     public int YearsOfExperience { get; set; }
     public List<int> BookIds { get; set; } = [];
 
+    public override string ToString()
+    {
+        return $"Id: {Id} | Ime: {FirstName} | Prezime: {LastName} | Datum rodjenja: {DateOfBirth:yyyy-MM-dd} | Adresa: {AddressId} | Telefon: {Phone} | Email: {Email} | Licna: {IdCardNumber} | Godine iskustva: {YearsOfExperience} | Knjige: [{string.Join(",", BookIds)}]";
+    }
+
     public string[] ToCSV()
     {
         return

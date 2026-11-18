@@ -21,7 +21,7 @@ public class PublisherController
         Console.WriteLine("--- Dodavanje izdavaca ---");
         Publisher publisher = ReadPublisher();
         _publisherDao.Add(publisher);
-        Console.WriteLine($"Izdavac je dodat sa Id {publisher.Id}.");
+        ConsoleOutput.Success($"Izdavac je dodat sa Id {publisher.Id}.");
     }
 
     public void EditPublisher()
@@ -30,7 +30,17 @@ public class PublisherController
         int id = ConsoleInput.ReadExistingId("Id izdavaca", id => _publisherDao.GetAll().Any(p => p.Id == id));
         Publisher publisher = ReadPublisher(id);
         _publisherDao.Update(publisher);
-        Console.WriteLine("Izdavac je izmenjen.");
+        ConsoleOutput.Success("Izdavac je izmenjen.");
+    }
+
+    public void ShowPublishers()
+    {
+        ConsoleOutput.Header("\n===== IZDAVACI =====");
+        foreach (Publisher publisher in _publisherDao.GetAll())
+        {
+            Console.WriteLine(publisher);
+            ConsoleOutput.Divider();
+        }
     }
 
     public void DeletePublisher()
@@ -38,7 +48,7 @@ public class PublisherController
         Console.WriteLine("--- Brisanje izdavaca ---");
         int id = ConsoleInput.ReadExistingId("Id izdavaca", id => _publisherDao.GetAll().Any(p => p.Id == id));
         _publisherDao.Remove(id);
-        Console.WriteLine("Izdavac je obrisan.");
+        ConsoleOutput.Success("Izdavac je obrisan.");
     }
 
     private Publisher ReadPublisher(int id = 0)
@@ -68,7 +78,7 @@ public class PublisherController
             return id;
         }
 
-        Console.WriteLine("Unet je neispravan Id, ostavlja se prazno.");
+        ConsoleOutput.Error("Unet je neispravan Id, ostavlja se prazno.");
         return null;
     }
 }
