@@ -14,7 +14,7 @@ referenceSync.SyncAll();
 
 VisitorController visitorController = new(visitorDao, addressDao, bookDao, purchaseDao, referenceSync);
 PurchaseController purchaseController = new(purchaseDao, visitorDao, bookDao, referenceSync);
-PublisherController publisherController = new(publisherDao, authorDao, bookDao, referenceSync);
+PublisherController publisherController = new(publisherDao, authorDao, bookDao);
 AddressController addressController = new(addressDao, visitorDao, authorDao);
 AuthorController authorController = new(authorDao, addressDao, bookDao, publisherDao, referenceSync);
 BookController bookController = new(bookDao, publisherDao, authorDao, purchaseDao, referenceSync);

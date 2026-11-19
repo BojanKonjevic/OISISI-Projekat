@@ -45,7 +45,25 @@ public class VisitorController
         ConsoleOutput.Header("\n===== POSETIOCI =====");
         foreach (Visitor visitor in _visitorDao.GetAll())
         {
-            Console.WriteLine(visitor);
+            var purchaseCounts = _purchaseDao.GetAll()
+                .Where(p => p.VisitorId == visitor.Id)
+                .GroupBy(p => p.BookId)
+                .ToList();
+            int totalPurchases = purchaseCounts.Count;
+            string purchaseStr = totalPurchases > 0 ? $"{totalPurchases} kupovina" : "nema kupovina";
+
+            var wishlistBooks = _bookDao.GetAll()
+                .Where(b => visitor.WishlistBookIds.Contains(b.Id))
+                .Select(b => b.Title)
+                .Take(3)
+                .ToList();
+            string wishlistStr = wishlistBooks.Count > 0
+                ? string.Join(", ", wishlistBooks)
+                : "nema zelja";
+
+            string statusStr = visitor.Status.ToString();
+
+            Console.WriteLine($"Id: {visitor.Id} | Ime: {visitor.FirstName} | Prezime: {visitor.LastName} | Status: {statusStr} | Ocena: {visitor.AverageRating:F1} | Kupovine: {purchaseStr} | Zelje: {wishlistStr}");
             ConsoleOutput.Divider();
         }
     }

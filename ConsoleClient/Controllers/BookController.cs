@@ -45,7 +45,20 @@ public class BookController
         ConsoleOutput.Header("\n===== KNJIGE =====");
         foreach (Book book in _bookDao.GetAll())
         {
-            Console.WriteLine(book);
+            var publisher = _publisherDao.GetAll().FirstOrDefault(p => p.Id == book.PublisherId);
+            string publisherName = publisher?.Name ?? "---";
+            var authorNames = _authorDao.GetAll()
+                .Where(a => book.AuthorIds.Contains(a.Id))
+                .Select(a => a.FirstName + " " + a.LastName)
+                .ToList();
+            string authorsStr = authorNames.Count > 0
+                ? string.Join(", ", authorNames)
+                : "nema autora";
+
+            int buyerCount = _purchaseDao.GetAll().Count(p => p.BookId == book.Id);
+            string buyersStr = buyerCount > 0 ? $"{buyerCount} kupaca" : "nema kupaca";
+
+            Console.WriteLine($"Id: {book.Id} | ISBN: {book.Isbn} | Naslov: {book.Title} | Izdavac: {publisherName} | Autori: {authorsStr} | Kupci: {buyersStr}");
             ConsoleOutput.Divider();
         }
     }
@@ -86,9 +99,10 @@ public class BookController
         while (true)
         {
             string isbn = ConsoleInput.ReadText("ISBN");
-            if (!isbn.All(char.IsAsciiDigit))
+            string cleanIsbn = isbn.Replace("-", "").Replace(" ", "");
+            if (!cleanIsbn.All(char.IsAsciiDigit) && cleanIsbn.Length > 0)
             {
-                ConsoleOutput.Error("ISBN moze sadrzati samo cifre.");
+                ConsoleOutput.Error("ISBN moze sadrzati samo cifre i zagrade.");
                 continue;
             }
 

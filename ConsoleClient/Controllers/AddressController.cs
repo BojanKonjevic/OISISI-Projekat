@@ -38,7 +38,7 @@ public class AddressController
         ConsoleOutput.Header("\n===== ADRESE =====");
         foreach (Address address in _addressDao.GetAll())
         {
-            Console.WriteLine(address);
+            Console.WriteLine($"Id: {address.Id} | Ulica: {address.Street} | Grad: {address.City} | Drzava: {address.Country}");
             ConsoleOutput.Divider();
         }
     }

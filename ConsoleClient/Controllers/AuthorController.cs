@@ -26,6 +26,7 @@ public class AuthorController
         Console.WriteLine("--- Dodavanje autora ---");
         Author author = ReadAuthor();
         _authorDao.Add(author);
+        _referenceSync.SyncAll();
         ConsoleOutput.Success($"Autor je dodat sa Id {author.Id}.");
     }
 
@@ -44,7 +45,17 @@ public class AuthorController
         ConsoleOutput.Header("\n===== AUTORI =====");
         foreach (Author author in _authorDao.GetAll())
         {
-            Console.WriteLine(author);
+            var addr = _addressDao.GetAll().FirstOrDefault(a => a.Id == author.AddressId);
+            string addressName = addr?.ToString() ?? "---";
+            var bookTitles = _bookDao.GetAll()
+                .Where(b => b.AuthorIds.Contains(author.Id))
+                .Select(b => b.Title)
+                .ToList();
+            string booksStr = bookTitles.Count > 0
+                ? string.Join(", ", bookTitles)
+                : "nema knjiga";
+
+            Console.WriteLine($"Id: {author.Id} | Ime: {author.FirstName} | Prezime: {author.LastName} | Adresa: {addressName} | Godine iskustva: {author.YearsOfExperience} | Knjige: {booksStr}");
             ConsoleOutput.Divider();
         }
     }

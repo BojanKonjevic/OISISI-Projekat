@@ -1,6 +1,5 @@
 using Core.DAO;
 using Core.Models;
-using Core.Services;
 
 namespace ConsoleClient.Controllers;
 
@@ -9,14 +8,12 @@ public class PublisherController
     private readonly PublisherDao _publisherDao;
     private readonly AuthorDao _authorDao;
     private readonly BookDao _bookDao;
-    private readonly ReferenceSyncService _referenceSync;
 
-    public PublisherController(PublisherDao publisherDao, AuthorDao authorDao, BookDao bookDao, ReferenceSyncService referenceSync)
+    public PublisherController(PublisherDao publisherDao, AuthorDao authorDao, BookDao bookDao)
     {
         _publisherDao = publisherDao;
         _authorDao = authorDao;
         _bookDao = bookDao;
-        _referenceSync = referenceSync;
     }
 
     public void AddPublisher()
@@ -33,7 +30,6 @@ public class PublisherController
         int id = ConsoleInput.ReadExistingId("Id izdavaca", id => _publisherDao.GetAll().Any(p => p.Id == id));
         Publisher publisher = ReadPublisher(id);
         _publisherDao.Update(publisher);
-        _referenceSync.SyncAll();
         ConsoleOutput.Success("Izdavac je izmenjen.");
     }
 
@@ -42,7 +38,11 @@ public class PublisherController
         ConsoleOutput.Header("\n===== IZDAVACI =====");
         foreach (Publisher publisher in _publisherDao.GetAll())
         {
-            Console.WriteLine(publisher);
+            string sefName = publisher.HeadAuthorId.HasValue
+                ? (_authorDao.GetAll().FirstOrDefault(a => a.Id == publisher.HeadAuthorId.Value)?.ToString() ?? "---")
+                : "-";
+
+            Console.WriteLine($"Id: {publisher.Id} | Sifra: {publisher.Code} | Naziv: {publisher.Name} | Sef: {sefName} | Autori: [{string.Join(", ", _authorDao.GetAll().Where(a => publisher.AuthorIds.Contains(a.Id)).Select(a => a.FirstName + " " + a.LastName))}] | Knjige: [{string.Join(", ", _bookDao.GetAll().Where(b => publisher.BookIds.Contains(b.Id)).Select(b => b.Title))}]");
             ConsoleOutput.Divider();
         }
     }
