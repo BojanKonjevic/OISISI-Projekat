@@ -77,15 +77,16 @@ public class PublisherController
         };
     }
 
-    private int? ReadHeadAuthorId()
+    private int ReadHeadAuthorId()
     {
         while (true)
         {
-            Console.Write("Id sefa izdavaca (prazno za preskakanje): ");
+            Console.Write("Id sefa izdavaca: ");
             string input = Console.ReadLine()?.Trim() ?? string.Empty;
             if (input.Length == 0)
             {
-                return null;
+                ConsoleOutput.Error("Id sefa izdavaca je obavezan.");
+                continue;
             }
 
             if (!int.TryParse(input, out int id))

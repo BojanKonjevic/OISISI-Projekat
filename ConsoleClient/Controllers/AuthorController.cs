@@ -35,6 +35,13 @@ public class AuthorController
         Console.WriteLine("--- Izmena autora ---");
         int id = ConsoleInput.ReadExistingId("Id autora", id => _authorDao.GetAll().Any(a => a.Id == id));
         Author author = ReadAuthor(id);
+        if (author.YearsOfExperience < Publisher.MinHeadAuthorExperience &&
+            _publisherDao.GetAll().Any(p => p.HeadAuthorId == id))
+        {
+            ConsoleOutput.Error($"Izmena je odbijena: autor je sef izdavaca i mora imati najmanje {Publisher.MinHeadAuthorExperience} godina iskustva.");
+            return;
+        }
+
         _authorDao.Update(author);
         _referenceSync.SyncAll();
         ConsoleOutput.Success("Autor je izmenjen.");
