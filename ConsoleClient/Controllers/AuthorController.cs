@@ -71,15 +71,15 @@ public class AuthorController
     {
         Console.WriteLine("--- Brisanje autora ---");
         int id = ConsoleInput.ReadExistingId("Id autora", id => _authorDao.GetAll().Any(a => a.Id == id));
-        if (_bookDao.GetAll().Any(b => b.AuthorIds.Contains(id) && b.AuthorIds.Count == 1))
+        if (_bookDao.GetAll().Any(b => b.AuthorIds.Contains(id) && b.AuthorIds.Distinct().Count() == 1))
         {
             ConsoleOutput.Error("Autor ne moze biti obrisan jer je jedini autor knjige.");
             return;
         }
 
-        if (_publisherDao.GetAll().Any(p => p.HeadAuthorId == id || p.AuthorIds.Contains(id)))
+        if (_publisherDao.GetAll().Any(p => p.HeadAuthorId == id))
         {
-            ConsoleOutput.Error("Autor ne moze biti obrisan jer ga referenciraju izdavaci.");
+            ConsoleOutput.Error("Autor ne moze biti obrisan jer je sef izdavaca.");
             return;
         }
 

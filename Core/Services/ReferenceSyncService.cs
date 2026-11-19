@@ -39,7 +39,10 @@ public class ReferenceSyncService
 
         foreach (Book book in books)
         {
-            book.AuthorIds = book.AuthorIds.Where(id => authors.Any(a => a.Id == id)).ToList();
+            book.AuthorIds = book.AuthorIds
+                .Where(id => authors.Any(a => a.Id == id))
+                .Distinct()
+                .ToList();
             book.BuyerVisitorIds = purchases
                 .Where(p => p.BookId == book.Id)
                 .Select(p => p.VisitorId)
@@ -63,9 +66,16 @@ public class ReferenceSyncService
 
         foreach (Publisher publisher in publishers)
         {
-            publisher.BookIds = books
+            List<Book> publisherBooks = books
                 .Where(b => b.PublisherId == publisher.Id)
+                .ToList();
+
+            publisher.BookIds = publisherBooks
                 .Select(b => b.Id)
+                .ToList();
+            publisher.AuthorIds = publisherBooks
+                .SelectMany(b => b.AuthorIds)
+                .Distinct()
                 .ToList();
             _publisherDao.Update(publisher);
         }

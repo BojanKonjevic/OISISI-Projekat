@@ -72,8 +72,7 @@ public class PublisherController
             Id = id,
             Code = ConsoleInput.ReadUniqueText("Sifra", _publisherDao.GetAll().Where(p => p.Id != id).Select(p => p.Code)),
             Name = ConsoleInput.ReadText("Naziv"),
-            HeadAuthorId = ReadHeadAuthorId(),
-            AuthorIds = ConsoleInput.ReadExistingIds("Id-evi autora", id => _authorDao.GetAll().Any(a => a.Id == id))
+            HeadAuthorId = ReadHeadAuthorId()
         };
     }
 

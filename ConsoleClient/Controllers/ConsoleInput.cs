@@ -163,13 +163,15 @@ public static class ConsoleInput
         bool valid = true;
         foreach (string part in input.Split(','))
         {
-            if (int.TryParse(part.Trim(), out int id))
-            {
-                ids.Add(id);
-            }
-            else
+            if (!int.TryParse(part.Trim(), out int id))
             {
                 valid = false;
+                continue;
+            }
+
+            if (!ids.Contains(id))
+            {
+                ids.Add(id);
             }
         }
 
