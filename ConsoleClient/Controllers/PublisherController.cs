@@ -1,5 +1,6 @@
 using Core.DAO;
 using Core.Models;
+using Core.Services;
 
 namespace ConsoleClient.Controllers;
 
@@ -8,12 +9,14 @@ public class PublisherController
     private readonly PublisherDao _publisherDao;
     private readonly AuthorDao _authorDao;
     private readonly BookDao _bookDao;
+    private readonly ReferenceSyncService _referenceSync;
 
-    public PublisherController(PublisherDao publisherDao, AuthorDao authorDao, BookDao bookDao)
+    public PublisherController(PublisherDao publisherDao, AuthorDao authorDao, BookDao bookDao, ReferenceSyncService referenceSync)
     {
         _publisherDao = publisherDao;
         _authorDao = authorDao;
         _bookDao = bookDao;
+        _referenceSync = referenceSync;
     }
 
     public void AddPublisher()
@@ -30,6 +33,7 @@ public class PublisherController
         int id = ConsoleInput.ReadExistingId("Id izdavaca", id => _publisherDao.GetAll().Any(p => p.Id == id));
         Publisher publisher = ReadPublisher(id);
         _publisherDao.Update(publisher);
+        _referenceSync.SyncAll();
         ConsoleOutput.Success("Izdavac je izmenjen.");
     }
 

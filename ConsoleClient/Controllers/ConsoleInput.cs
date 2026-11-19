@@ -145,12 +145,23 @@ public static class ConsoleInput
         }
 
         List<int> ids = [];
+        bool valid = true;
         foreach (string part in input.Split(','))
         {
             if (int.TryParse(part.Trim(), out int id))
             {
                 ids.Add(id);
             }
+            else
+            {
+                valid = false;
+            }
+        }
+
+        if (!valid)
+        {
+            ConsoleOutput.Error("Svi uneti delovi moraju biti brojevi.");
+            return ReadIds(prompt);
         }
 
         return ids;

@@ -35,6 +35,7 @@ public class AuthorController
         int id = ConsoleInput.ReadExistingId("Id autora", id => _authorDao.GetAll().Any(a => a.Id == id));
         Author author = ReadAuthor(id);
         _authorDao.Update(author);
+        _referenceSync.SyncAll();
         ConsoleOutput.Success("Autor je izmenjen.");
     }
 
