@@ -33,11 +33,13 @@ public class ReferenceSyncService
             List<Purchase> visitorPurchases = purchases.Where(p => p.VisitorId == visitor.Id).ToList();
             visitor.PurchaseIds = visitorPurchases.Select(p => p.Id).ToList();
             visitor.AverageRating = visitorPurchases.Count == 0 ? 0 : visitorPurchases.Average(p => p.Rating);
+            visitor.WishlistBookIds = visitor.WishlistBookIds.Where(id => books.Any(b => b.Id == id)).ToList();
             _visitorDao.Update(visitor);
         }
 
         foreach (Book book in books)
         {
+            book.AuthorIds = book.AuthorIds.Where(id => authors.Any(a => a.Id == id)).ToList();
             book.BuyerVisitorIds = purchases
                 .Where(p => p.BookId == book.Id)
                 .Select(p => p.VisitorId)
