@@ -24,7 +24,7 @@ public class Storage<T> where T : ISerializable, new()
             return [];
         }
 
-        return _serializer.FromCSV(File.ReadLines(_filePath));
+        return _serializer.FromCSV(File.ReadLines(_filePath), _filePath);
     }
 
     public void Save(List<T> items)

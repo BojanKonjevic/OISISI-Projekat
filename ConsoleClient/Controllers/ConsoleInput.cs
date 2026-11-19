@@ -10,12 +10,19 @@ public static class ConsoleInput
         {
             Console.Write($"{prompt}: ");
             string input = Console.ReadLine()?.Trim() ?? string.Empty;
-            if (input.Length > 0)
+            if (input.Length == 0)
             {
-                return input;
+                ConsoleOutput.Error("Unos ne sme biti prazan.");
+                continue;
             }
 
-            ConsoleOutput.Error("Unos ne sme biti prazan.");
+            if (input.Contains('|'))
+            {
+                ConsoleOutput.Error("Polje ne sme sadrzati znak | jer se koristi kao separator u CSV fajlu.");
+                continue;
+            }
+
+            return input;
         }
     }
 

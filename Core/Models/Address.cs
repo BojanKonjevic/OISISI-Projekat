@@ -10,6 +10,8 @@ public class Address : ISerializable
     public string City { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
 
+    public int ExpectedFieldCount => 5;
+
     public override string ToString()
     {
         return $"Id: {Id} | Ulica: {Street} | Broj: {Number} | Grad: {City} | Drzava: {Country}";

@@ -17,6 +17,8 @@ public class Book : ISerializable
     public List<int> BuyerVisitorIds { get; set; } = [];
     public List<int> WishlistVisitorIds { get; set; } = [];
 
+    public int ExpectedFieldCount => 11;
+
     public override string ToString()
     {
         return $"Id: {Id} | ISBN: {Isbn} | Naslov: {Title} | Zanr: {Genre} | Godina izdanja: {PublicationYear} | Cena: {Price} | Broj strana: {PageCount} | Autori: [{string.Join(",", AuthorIds)}] | Izdavac: {PublisherId} | Kupci: [{string.Join(",", BuyerVisitorIds)}] | Zelje: [{string.Join(",", WishlistVisitorIds)}]";

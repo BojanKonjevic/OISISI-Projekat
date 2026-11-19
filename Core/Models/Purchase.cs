@@ -11,6 +11,8 @@ public class Purchase : ISerializable
     public int Rating { get; set; }
     public string Comment { get; set; } = string.Empty;
 
+    public int ExpectedFieldCount => 6;
+
     public override string ToString()
     {
         return $"Id: {Id} | Posetilac: {VisitorId} | Knjiga: {BookId} | Datum kupovine: {PurchaseDate:yyyy-MM-dd} | Ocena: {Rating} | Komentar: {Comment}";

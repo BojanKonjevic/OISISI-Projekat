@@ -1,67 +1,82 @@
 using ConsoleClient.Controllers;
 using Core.DAO;
 using Core.Services;
+using Core.Utils;
 
-VisitorDao visitorDao = new();
-PurchaseDao purchaseDao = new();
-PublisherDao publisherDao = new();
-AddressDao addressDao = new();
-AuthorDao authorDao = new();
-BookDao bookDao = new();
-
-ReferenceSyncService referenceSync = new(visitorDao, purchaseDao, publisherDao, authorDao, bookDao);
-referenceSync.SyncAll();
-
-VisitorController visitorController = new(visitorDao, addressDao, bookDao, purchaseDao, referenceSync);
-PurchaseController purchaseController = new(purchaseDao, visitorDao, bookDao, referenceSync);
-PublisherController publisherController = new(publisherDao, authorDao, bookDao, referenceSync);
-AddressController addressController = new(addressDao, visitorDao, authorDao);
-AuthorController authorController = new(authorDao, addressDao, bookDao, publisherDao, referenceSync);
-BookController bookController = new(bookDao, publisherDao, authorDao, purchaseDao, referenceSync);
-
-while (true)
+try
 {
-    Console.WriteLine();
-    ConsoleOutput.Header("=== Sajam knjiga ===");
-    Console.WriteLine("1. Posetioci");
-    Console.WriteLine("2. Kupovine");
-    Console.WriteLine("3. Izdavaci");
-    Console.WriteLine("4. Adrese");
-    Console.WriteLine("5. Autori");
-    Console.WriteLine("6. Knjige");
-    Console.WriteLine("0. Izlaz");
-    Console.Write("Izbor: ");
+    Run();
+}
+catch (DataFileException ex)
+{
+    ConsoleOutput.Error(ex.Message);
+    ConsoleOutput.Error("Ispravite neispravan zapis u Data folderu pa pokrenite aplikaciju ponovo.");
+    Environment.ExitCode = 1;
+}
 
-    string? choice = Console.ReadLine()?.Trim();
+void Run()
+{
+    VisitorDao visitorDao = new();
+    PurchaseDao purchaseDao = new();
+    PublisherDao publisherDao = new();
+    AddressDao addressDao = new();
+    AuthorDao authorDao = new();
+    BookDao bookDao = new();
 
-    if (choice is null || choice == "0")
+    ReferenceSyncService referenceSync = new(visitorDao, purchaseDao, publisherDao, authorDao, bookDao);
+    referenceSync.SyncAll();
+
+    VisitorController visitorController = new(visitorDao, addressDao, bookDao, purchaseDao, referenceSync);
+    PurchaseController purchaseController = new(purchaseDao, visitorDao, bookDao, referenceSync);
+    PublisherController publisherController = new(publisherDao, authorDao, bookDao, referenceSync);
+    AddressController addressController = new(addressDao, visitorDao, authorDao);
+    AuthorController authorController = new(authorDao, addressDao, bookDao, publisherDao, referenceSync);
+    BookController bookController = new(bookDao, publisherDao, authorDao, purchaseDao, referenceSync);
+
+    while (true)
     {
-        break;
-    }
+        Console.WriteLine();
+        ConsoleOutput.Header("=== Sajam knjiga ===");
+        Console.WriteLine("1. Posetioci");
+        Console.WriteLine("2. Kupovine");
+        Console.WriteLine("3. Izdavaci");
+        Console.WriteLine("4. Adrese");
+        Console.WriteLine("5. Autori");
+        Console.WriteLine("6. Knjige");
+        Console.WriteLine("0. Izlaz");
+        Console.Write("Izbor: ");
 
-    switch (choice)
-    {
-        case "1":
-            RunEntityMenu("Posetioci", visitorController.AddVisitor, visitorController.EditVisitor, visitorController.DeleteVisitor, visitorController.ShowVisitors);
+        string? choice = Console.ReadLine()?.Trim();
+
+        if (choice is null || choice == "0")
+        {
             break;
-        case "2":
-            RunEntityMenu("Kupovine", purchaseController.AddPurchase, purchaseController.EditPurchase, purchaseController.DeletePurchase, purchaseController.ShowPurchases);
-            break;
-        case "3":
-            RunEntityMenu("Izdavaci", publisherController.AddPublisher, publisherController.EditPublisher, publisherController.DeletePublisher, publisherController.ShowPublishers);
-            break;
-        case "4":
-            RunEntityMenu("Adrese", addressController.AddAddress, addressController.EditAddress, addressController.DeleteAddress, addressController.ShowAddresses);
-            break;
-        case "5":
-            RunEntityMenu("Autori", authorController.AddAuthor, authorController.EditAuthor, authorController.DeleteAuthor, authorController.ShowAuthors);
-            break;
-        case "6":
-            RunEntityMenu("Knjige", bookController.AddBook, bookController.EditBook, bookController.DeleteBook, bookController.ShowBooks);
-            break;
-        default:
-            ConsoleOutput.Error("Nepostojeca opcija.");
-            break;
+        }
+
+        switch (choice)
+        {
+            case "1":
+                RunEntityMenu("Posetioci", visitorController.AddVisitor, visitorController.EditVisitor, visitorController.DeleteVisitor, visitorController.ShowVisitors);
+                break;
+            case "2":
+                RunEntityMenu("Kupovine", purchaseController.AddPurchase, purchaseController.EditPurchase, purchaseController.DeletePurchase, purchaseController.ShowPurchases);
+                break;
+            case "3":
+                RunEntityMenu("Izdavaci", publisherController.AddPublisher, publisherController.EditPublisher, publisherController.DeletePublisher, publisherController.ShowPublishers);
+                break;
+            case "4":
+                RunEntityMenu("Adrese", addressController.AddAddress, addressController.EditAddress, addressController.DeleteAddress, addressController.ShowAddresses);
+                break;
+            case "5":
+                RunEntityMenu("Autori", authorController.AddAuthor, authorController.EditAuthor, authorController.DeleteAuthor, authorController.ShowAuthors);
+                break;
+            case "6":
+                RunEntityMenu("Knjige", bookController.AddBook, bookController.EditBook, bookController.DeleteBook, bookController.ShowBooks);
+                break;
+            default:
+                ConsoleOutput.Error("Nepostojeca opcija.");
+                break;
+        }
     }
 }
 

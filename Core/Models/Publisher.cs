@@ -13,6 +13,8 @@ public class Publisher : ISerializable
     public List<int> AuthorIds { get; set; } = [];
     public List<int> BookIds { get; set; } = [];
 
+    public int ExpectedFieldCount => 6;
+
     public override string ToString()
     {
         return $"Id: {Id} | Sifra: {Code} | Naziv: {Name} | Sef: {HeadAuthorId?.ToString() ?? "-"} | Autori: [{string.Join(",", AuthorIds)}] | Knjige: [{string.Join(",", BookIds)}]";

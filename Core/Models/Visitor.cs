@@ -19,6 +19,8 @@ public class Visitor : ISerializable
     public List<int> PurchaseIds { get; set; } = [];
     public List<int> WishlistBookIds { get; set; } = [];
 
+    public int ExpectedFieldCount => 13;
+
     public override string ToString()
     {
         return $"Id: {Id} | Ime: {FirstName} | Prezime: {LastName} | Datum rodjenja: {DateOfBirth:yyyy-MM-dd} | Adresa: {AddressId} | Telefon: {Phone} | Email: {Email} | Br. clanske karte: {MembershipCardNumber} | Godina: {MembershipYear} | Status: {Status} | Ocena: {AverageRating} | Kupovine: [{string.Join(",", PurchaseIds)}] | Lista zelja: [{string.Join(",", WishlistBookIds)}]";

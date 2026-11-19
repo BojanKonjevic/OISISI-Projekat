@@ -15,18 +15,37 @@ public class Serializer<T> where T : ISerializable, new()
         return sb.ToString();
     }
 
-    public List<T> FromCSV(IEnumerable<string> lines)
+    public List<T> FromCSV(IEnumerable<string> lines, string? filePath = null)
     {
         List<T> items = [];
+        int lineNumber = 0;
         foreach (string line in lines)
         {
+            lineNumber++;
             if (line.Length == 0)
             {
                 continue;
             }
 
+            string[] values = line.Split(Delimiter);
             T item = new();
-            item.FromCSV(line.Split(Delimiter));
+            if (values.Length != item.ExpectedFieldCount)
+            {
+                throw new DataFileException(
+                    filePath,
+                    lineNumber,
+                    $"ocekivano {item.ExpectedFieldCount} polja, pronadjeno {values.Length}");
+            }
+
+            try
+            {
+                item.FromCSV(values);
+            }
+            catch (Exception ex) when (ex is FormatException or OverflowException or ArgumentException or IndexOutOfRangeException)
+            {
+                throw new DataFileException(filePath, lineNumber, $"neispravna vrednost ({ex.Message})", ex);
+            }
+
             items.Add(item);
         }
 
