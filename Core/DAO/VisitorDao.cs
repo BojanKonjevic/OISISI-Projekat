@@ -1,10 +1,9 @@
-using Core.Interfaces;
 using Core.Models;
 using Core.Utils;
 
 namespace Core.DAO;
 
-public class VisitorDao : IVisitorDao
+public class VisitorDao
 {
     private readonly List<Visitor> _visitors;
     private readonly Storage<Visitor> _storage;

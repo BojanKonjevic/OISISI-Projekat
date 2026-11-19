@@ -1,10 +1,9 @@
-using Core.Interfaces;
 using Core.Models;
 using Core.Utils;
 
 namespace Core.DAO;
 
-public class AddressDao : IAddressDao
+public class AddressDao
 {
     private readonly List<Address> _addresses;
     private readonly Storage<Address> _storage;

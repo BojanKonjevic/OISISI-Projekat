@@ -1,10 +1,9 @@
-using Core.Interfaces;
 using Core.Models;
 using Core.Utils;
 
 namespace Core.DAO;
 
-public class PublisherDao : IPublisherDao
+public class PublisherDao
 {
     private readonly List<Publisher> _publishers;
     private readonly Storage<Publisher> _storage;

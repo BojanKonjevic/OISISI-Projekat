@@ -1,10 +1,9 @@
-using Core.Interfaces;
 using Core.Models;
 using Core.Utils;
 
 namespace Core.DAO;
 
-public class BookDao : IBookDao
+public class BookDao
 {
     private readonly List<Book> _books;
     private readonly Storage<Book> _storage;

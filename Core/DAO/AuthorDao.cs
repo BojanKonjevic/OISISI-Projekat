@@ -1,10 +1,9 @@
-using Core.Interfaces;
 using Core.Models;
 using Core.Utils;
 
 namespace Core.DAO;
 
-public class AuthorDao : IAuthorDao
+public class AuthorDao
 {
     private readonly List<Author> _authors;
     private readonly Storage<Author> _storage;

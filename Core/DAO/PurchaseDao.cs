@@ -1,10 +1,9 @@
-using Core.Interfaces;
 using Core.Models;
 using Core.Utils;
 
 namespace Core.DAO;
 
-public class PurchaseDao : IPurchaseDao
+public class PurchaseDao
 {
     private readonly List<Purchase> _purchases;
     private readonly Storage<Purchase> _storage;
