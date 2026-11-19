@@ -1,6 +1,7 @@
 using Core.DAO;
 using Core.Models;
 using Core.Services;
+using Core.Utils;
 
 namespace ConsoleClient.Controllers;
 
@@ -102,15 +103,17 @@ public class BookController
     {
         while (true)
         {
-            string isbn = ConsoleInput.ReadText("ISBN");
-            string cleanIsbn = isbn.Replace("-", "").Replace(" ", "");
-            if (!cleanIsbn.All(char.IsAsciiDigit) && cleanIsbn.Length > 0)
+            string input = ConsoleInput.ReadText("ISBN");
+            if (!IsbnValidator.TryNormalize(input, out string isbn))
             {
-                ConsoleOutput.Error("ISBN moze sadrzati samo cifre i zagrade.");
+                ConsoleOutput.Error("ISBN nije ispravan. Unesite ispravan ISBN-10 ili ISBN-13.");
                 continue;
             }
 
-            if (_bookDao.GetAll().Any(b => b.Id != id && b.Isbn == isbn))
+            if (_bookDao.GetAll().Any(b =>
+                    b.Id != id &&
+                    IsbnValidator.TryNormalize(b.Isbn, out string existingIsbn) &&
+                    existingIsbn == isbn))
             {
                 ConsoleOutput.Error("Vec postoji knjiga sa unetim ISBN-om.");
                 continue;
