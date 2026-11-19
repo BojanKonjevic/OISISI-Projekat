@@ -69,21 +69,37 @@ public class PublisherController
         };
     }
 
-    private static int? ReadHeadAuthorId()
+    private int? ReadHeadAuthorId()
     {
-        Console.Write("Id sefa izdavaca (prazno za preskakanje): ");
-        string input = Console.ReadLine()?.Trim() ?? string.Empty;
-        if (input.Length == 0)
+        while (true)
         {
-            return null;
-        }
+            Console.Write("Id sefa izdavaca (prazno za preskakanje): ");
+            string input = Console.ReadLine()?.Trim() ?? string.Empty;
+            if (input.Length == 0)
+            {
+                return null;
+            }
 
-        if (int.TryParse(input, out int id))
-        {
+            if (!int.TryParse(input, out int id))
+            {
+                ConsoleOutput.Error("Id mora biti ceo broj.");
+                continue;
+            }
+
+            Author? author = _authorDao.GetAll().FirstOrDefault(a => a.Id == id);
+            if (author is null)
+            {
+                ConsoleOutput.Error($"Autor sa Id {id} ne postoji.");
+                continue;
+            }
+
+            if (author.YearsOfExperience < Publisher.MinHeadAuthorExperience)
+            {
+                ConsoleOutput.Error($"Sef izdavaca mora imati najmanje {Publisher.MinHeadAuthorExperience} godina iskustva.");
+                continue;
+            }
+
             return id;
         }
-
-        ConsoleOutput.Error("Unet je neispravan Id, ostavlja se prazno.");
-        return null;
     }
 }

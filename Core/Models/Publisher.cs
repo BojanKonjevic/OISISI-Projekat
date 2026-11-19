@@ -4,6 +4,8 @@ namespace Core.Models;
 
 public class Publisher : ISerializable
 {
+    public const int MinHeadAuthorExperience = 5;
+
     public int Id { get; set; }
     public string Code { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
