@@ -89,7 +89,11 @@ public class BookController
             PublicationYear = ConsoleInput.ReadInt("Godina izdanja", 1450, DateTime.Today.Year + 1),
             Price = ReadPrice(),
             PageCount = ConsoleInput.ReadInt("Broj strana", 1),
-            AuthorIds = ConsoleInput.ReadExistingIds("Id-evi autora", id => _authorDao.GetAll().Any(a => a.Id == id)),
+            AuthorIds = ConsoleInput.ReadExistingIds(
+                "Id-evi autora",
+                id => _authorDao.GetAll().Any(a => a.Id == id),
+                minCount: 1,
+                minCountMessage: "Knjiga mora imati najmanje jednog autora."),
             PublisherId = ConsoleInput.ReadExistingId("Id izdavaca", id => _publisherDao.GetAll().Any(p => p.Id == id)),
         };
     }

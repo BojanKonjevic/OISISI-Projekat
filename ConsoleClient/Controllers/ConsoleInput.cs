@@ -125,11 +125,17 @@ public static class ConsoleInput
         }
     }
 
-    public static List<int> ReadExistingIds(string prompt, Func<int, bool> exists)
+    public static List<int> ReadExistingIds(string prompt, Func<int, bool> exists, int minCount = 0, string? minCountMessage = null)
     {
         while (true)
         {
-            List<int> ids = ReadIds(prompt);
+            List<int> ids = ReadIds(prompt, showEmptyHint: minCount == 0);
+            if (ids.Count < minCount)
+            {
+                ConsoleOutput.Error(minCountMessage ?? $"Potrebno je uneti najmanje {minCount} Id-eva.");
+                continue;
+            }
+
             if (ids.All(exists))
             {
                 return ids;
@@ -142,9 +148,11 @@ public static class ConsoleInput
         }
     }
 
-    public static List<int> ReadIds(string prompt)
+    public static List<int> ReadIds(string prompt, bool showEmptyHint = true)
     {
-        Console.Write($"{prompt} (odvojite zarezima, prazno za preskakanje): ");
+        Console.Write(showEmptyHint
+            ? $"{prompt} (odvojite zarezima, prazno za preskakanje): "
+            : $"{prompt} (odvojite zarezima): ");
         string input = Console.ReadLine()?.Trim() ?? string.Empty;
         if (input.Length == 0)
         {
