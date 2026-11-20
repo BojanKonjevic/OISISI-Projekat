@@ -1,4 +1,4 @@
-# OISISI projekat 2025/2026
+# OISISI projekat 2026/2027
 
 Informacioni sistem uprave sajma knjiga. C#, MVC.
 
